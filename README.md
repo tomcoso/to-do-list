@@ -6,4 +6,4 @@
     as these things go, I would most likely have to change a lot of it as I go, but it always
     helps to build the skill.
 
-    <img src="./todo-list-structure.drawio.png"/>
+    <img src="./todo-list-structure.drawio.png" width="600"/>
