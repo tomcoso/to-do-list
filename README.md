@@ -16,4 +16,4 @@
 
 #### Coding Stage
 
-1. I coded all the application logic according to the diagram I initially made, with some minot changes. I was glad I didn't forget a lot of the logic, so my skills definitely improved since last time I created a structural diagram. I also wrote an API cheatcheet since I ended up making the module API a bit complicated.
+1. I coded all the application logic according to the diagram I initially made, with some minor changes. I was glad I didn't forget a lot of the logic when making the diagram, so my skills definitely improved since last time. I also wrote an API cheatsheet since I ended up making the module API a bit complicated (could maybe be improved with object composition?).
