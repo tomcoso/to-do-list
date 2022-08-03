@@ -13,3 +13,7 @@
 
 3.  The DOM manipulation logic I did after the HTML template was done, so I had a better idea of
     what I needed to generate, and the view functions I had to code.
+
+#### Coding Stage
+
+1. I coded all the application logic according to the diagram I initially made, with some minot changes. I was glad I didn't forget a lot of the logic, so my skills definitely improved since last time I created a structural diagram. I also wrote an API cheatcheet since I ended up making the module API a bit complicated.
