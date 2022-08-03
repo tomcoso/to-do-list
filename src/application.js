@@ -13,6 +13,7 @@ const app = (function () {
       notes,
       dueDate,
       creationDate: 'Today', // insert date query
+      completed: false,
     }
 
     const read = function (prop) {
@@ -22,8 +23,10 @@ const app = (function () {
     const update = function (prop, value) {
       if (value) {
         data[prop] = value
+      } else if (data[prop] === 'completed') {
+        value ? (data[prop] = true) : (data[prop] = false)
       } else {
-        return 'Error: Value cannot be falsy'
+        throw new Error('Value cannot be falsy')
       }
     }
 
@@ -31,14 +34,14 @@ const app = (function () {
       if (!data[prop]) {
         data[prop] = value
       } else {
-        return 'Error: Property already exists'
+        throw new Error('Property already exists')
       }
     }
     const deleteProperty = function (prop) {
       if (data[prop] === dueDate || data[prop] === notes) {
         data[prop] = null
       } else {
-        return 'Error: Property cannot be deleted'
+        throw new Error('Property cannot be deleted')
       }
     }
 
@@ -46,47 +49,67 @@ const app = (function () {
   }
 
   const _task = function (data) {
-    const info = _info(data)
-    return { info }
+    const info = _info(...data)
+
+    const setCheckbox = function (obj = false) {
+      if (obj) {
+        this.checkbox = obj
+      } else {
+        throw new Error('Argument must be an object')
+      }
+    }
+
+    const updateCheckbox = function (item, bool) {
+      const checkbox = this.checkbox
+      for (const each in checkbox) {
+        if (each === item) {
+          checkbox[each] = bool === true
+        }
+      }
+      for (const each in checkbox) {
+        if (!checkbox[each]) {
+          return
+        }
+      }
+      this.info.update('completed', true)
+    }
+
+    return { info, setCheckbox, updateCheckbox }
   }
 
   const Taskgroup = function (data) {
     const info = _info(data)
     const tasks = []
 
-    const createTask = function (data) {
+    const find = function (task) {
+      for (const each in tasks) {
+        if (tasks[each].info.read('title') === task) {
+          return tasks[each]
+        }
+      }
+      return false
+    }
+
+    const createTask = function (...data) {
       const newTask = _task(data)
       tasks.push(newTask)
       return 'Task created succesfully'
     }
 
     const getTasks = function () {
-      for (const each in tasks) {
-        console.log(tasks[each].info.read('title'), tasks[each])
-      }
-      return 'Done!'
-    }
-
-    const updateTask = function (task, prop, value) {
-      if (value) {
-        tasks[task][prop] = value // if this doesnt work, try array.find(each => each.prop === task.prop)
-      } else {
-        return 'Error: Value must not be falsy'
-      }
-      return 'Task updated succesfully'
+      return tasks
     }
 
     const deleteTask = function (task) {
-      for (let i = 0; i < tasks.lenght; i++) {
-        if (tasks.title === task.title) {
+      for (let i = 0; i < tasks.length; i++) {
+        if (tasks[i].info.read('title') === task.info.read('title')) {
           tasks.splice(i, 1)
-          return 'Task deleted succesfully'
+          break
         }
       }
-      return 'Error: Failed to delete task'
     }
 
-    return { info, createTask, getTasks, updateTask, deleteTask }
+    return { info, createTask, getTasks, deleteTask, find }
   }
 
   return { Taskgroup }
