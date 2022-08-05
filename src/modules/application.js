@@ -1,3 +1,5 @@
+import { format } from 'date-fns'
+// import observer from './observer.js'
 const app = (function () {
   const _info = function (
     title,
@@ -12,7 +14,7 @@ const app = (function () {
       description,
       notes,
       dueDate,
-      creationDate: 'Today', // insert date query
+      creationDate: format(new Date(), 'dd/MM/yy'),
       completed: false,
     }
 
@@ -77,8 +79,8 @@ const app = (function () {
     return { info, setCheckbox, updateCheckbox }
   }
 
-  const Taskgroup = function (data) {
-    const info = _info(data)
+  const Taskgroup = function (...data) {
+    const info = _info(...data)
     const tasks = []
 
     const find = function (task) {
@@ -108,11 +110,38 @@ const app = (function () {
         }
       }
     }
-
     return { info, createTask, getTasks, deleteTask, find }
   }
 
-  return { Taskgroup }
+  const parseData = function (obj) {
+    const _parseInfo = function (item) {
+      const info = {
+        title: item.info.read('title'),
+        priority: item.info.read('priority'),
+        description: item.info.read('description'),
+        creationDate: item.info.read('creationDate'),
+        dueDate: item.info.read('dueDate'),
+        notes: item.info.read('notes'),
+        completed: item.info.read('completed'),
+        checkbox: item.checkbox || false,
+      }
+      return info
+    }
+    if (obj.getTasks) {
+      const parsedObj = _parseInfo(obj)
+      parsedObj.tasks = []
+      obj.getTasks().forEach((each) => {
+        const eachInfo = _parseInfo(each)
+        parsedObj.tasks.push(eachInfo)
+      })
+      return parsedObj
+    } else {
+      const parsedObj = _parseInfo(obj)
+      return parsedObj
+    }
+  }
+
+  return { Taskgroup, parseData }
 })()
 
 export default app
