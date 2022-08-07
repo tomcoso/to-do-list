@@ -26,6 +26,65 @@ const page = (function () {
     }
   }
 
+  const _renderTask = function (obj, layoutBody) {
+    const bodyHead = document.createElement('div')
+    bodyHead.classList.add('body-head')
+
+    const bodyTitle = document.createElement('div')
+    bodyTitle.classList.add('body-title')
+    bodyTitle.textContent = obj.title
+
+    const bodyCDate = document.createElement('p')
+    bodyCDate.textContent = 'Created the ' + obj.creationDate
+    bodyTitle.classList.add('body-cdate')
+
+    const titleWrap = document.createElement('div')
+    titleWrap.classList.add('body-title-wrap')
+    titleWrap.append(bodyTitle, bodyCDate)
+
+    const bodyPriority = document.createElement('p')
+    bodyPriority.textContent = obj.priority
+    bodyPriority.classList.add('body-priority')
+
+    const bodyDDate = document.createElement('p')
+    if (obj.dueDate) {
+      bodyDDate.textContent = 'Due: ' + obj.dueDate
+    } else {
+      bodyDDate.textContent = 'Due: Whenever'
+    }
+
+    bodyHead.append(titleWrap, bodyPriority, bodyDDate)
+
+    const bodyDesc = document.createElement('div')
+    bodyDesc.classList.add('body-description')
+    bodyDesc.textContent = obj.description
+
+    layoutBody.append(bodyHead, bodyDesc)
+
+    if (obj.checkbox) {
+      const checkboxWrap = document.createElement('div')
+      checkboxWrap.classList.add('checkbox-wrap')
+
+      const checkboxUl = document.createElement('ul')
+      for (const item in obj.checkbox) {
+        const checkboxItem = document.createElement('li')
+
+        const checkboxLabel = document.createElement('label')
+        checkboxLabel.setAttribute('for', item)
+        checkboxLabel.textContent = item
+
+        const checkboxInput = document.createElement('input')
+        checkboxInput.setAttribute('type', 'checkbox')
+        checkboxInput.setAttribute('id', item)
+
+        checkboxItem.append(checkboxInput, checkboxLabel)
+        checkboxUl.append(checkboxItem)
+      }
+      checkboxWrap.append(checkboxUl)
+      layoutBody.append(checkboxWrap)
+    }
+  }
+
   const _render = function (obj, taskgroupName) {
     main.replaceChildren()
 
@@ -41,62 +100,7 @@ const page = (function () {
     layoutBody.classList.add('main-body')
 
     if (taskgroupName) {
-      const bodyHead = document.createElement('div')
-      bodyHead.classList.add('body-head')
-
-      const bodyTitle = document.createElement('div')
-      bodyTitle.classList.add('body-title')
-      bodyTitle.textContent = obj.title
-
-      const bodyCDate = document.createElement('p')
-      bodyCDate.textContent = 'Created the ' + obj.creationDate
-      bodyTitle.classList.add('body-cdate')
-
-      const titleWrap = document.createElement('div')
-      titleWrap.classList.add('body-title-wrap')
-      titleWrap.append(bodyTitle, bodyCDate)
-
-      const bodyPriority = document.createElement('p')
-      bodyPriority.textContent = obj.priority
-      bodyPriority.classList.add('body-priority')
-
-      const bodyDDate = document.createElement('p')
-      if (obj.dueDate) {
-        bodyDDate.textContent = 'Due: ' + obj.dueDate
-      } else {
-        bodyDDate.textContent = 'Due: Whenever'
-      }
-
-      bodyHead.append(titleWrap, bodyPriority, bodyDDate)
-
-      const bodyDesc = document.createElement('div')
-      bodyDesc.classList.add('body-description')
-      bodyDesc.textContent = obj.description
-
-      layoutBody.append(bodyHead, bodyDesc)
-
-      if (obj.checkbox) {
-        const checkboxWrap = document.createElement('div')
-        checkboxWrap.classList.add('checkbox-wrap')
-
-        const checkboxUl = document.createElement('ul')
-        for (const item in obj.checkbox) {
-          const checkboxItem = document.createElement('li')
-
-          const checkboxLabel = document.createElement('label')
-          checkboxLabel.setAttribute('for', item)
-          checkboxLabel.textContent = item
-
-          const checkboxInput = document.createElement('input')
-          checkboxInput.setAttribute('type', 'checkbox')
-          checkboxInput.setAttribute('id', item)
-
-          checkboxItem.append(checkboxInput, checkboxLabel)
-          checkboxUl.append(checkboxItem)
-        }
-        checkboxWrap.append(checkboxUl)
-        layoutBody.append(checkboxWrap)
-      }
+      _renderTask(obj, layoutBody)
     }
     main.append(layoutHead, layoutBody)
   }
