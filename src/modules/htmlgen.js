@@ -1,7 +1,9 @@
 // import observer from './observer.js'
+import { format } from 'date-fns'
 const page = (function () {
   const main = document.querySelector('#main-container')
   const deck = document.querySelector('#deck')
+  const incomingTab = document.querySelector('.incoming-wrap div')
 
   const attach = function (data) {
     for (let i = 0; i < data.length; i++) {
@@ -24,6 +26,9 @@ const page = (function () {
       }
       deck.append(taskgroup)
     }
+    incomingTab.addEventListener('click', (e) => {
+      _render(data, 'Incoming')
+    })
   }
 
   const _renderTask = function (obj, layoutBody) {
@@ -80,13 +85,14 @@ const page = (function () {
       for (const item in obj.checkbox) {
         const checkboxItem = document.createElement('li')
 
+        const id = 'id' + Math.random().toString(16).slice(2)
         const checkboxLabel = document.createElement('label')
-        checkboxLabel.setAttribute('for', item)
+        checkboxLabel.setAttribute('for', id)
         checkboxLabel.textContent = item
 
         const checkboxInput = document.createElement('input')
         checkboxInput.setAttribute('type', 'checkbox')
-        checkboxInput.setAttribute('id', item)
+        checkboxInput.setAttribute('id', id)
 
         checkboxItem.append(checkboxInput, checkboxLabel)
         checkboxUl.append(checkboxItem)
@@ -180,6 +186,61 @@ const page = (function () {
     layoutBody.append(bodyHead, bodyTasks)
   }
 
+  const _renderIncoming = function (obj, layoutBody) {
+    const currentDate = format(new Date(), 'dd/MM/yy')
+    let ifToday = false
+    for (const tg in obj) {
+      for (const t in obj[tg].tasks) {
+        if (obj[tg].tasks[t].dueDate === currentDate) {
+          ifToday = true
+        }
+      }
+    }
+    if (ifToday) {
+      const todayPanel = document.createElement('div')
+      todayPanel.classList.add('time-panel', 'today')
+
+      const todayTitle = document.createElement('div')
+      todayTitle.textContent = 'Today'
+
+      const todayTasks = document.createElement('div')
+      todayTasks.classList.add('time-panel-tasks')
+
+      const todayTasksList = document.createElement('ul')
+      for (const tg in obj) {
+        for (const t in obj[tg].tasks) {
+          if (obj[tg].tasks[t].dueDate === currentDate) {
+            const newItem = document.createElement('li')
+            const checkboxItem = document.createElement('div')
+
+            const id = 'id' + Math.random().toString(16).slice(2)
+            const checkboxLabel = document.createElement('label')
+            checkboxLabel.setAttribute('for', id)
+            checkboxLabel.textContent = obj[tg].tasks[t].title
+
+            const checkboxInput = document.createElement('input')
+            checkboxInput.setAttribute('type', 'checkbox')
+            checkboxInput.setAttribute('id', id)
+
+            checkboxItem.append(checkboxInput, checkboxLabel)
+
+            const itemTitle = document.createElement('span')
+            itemTitle.append(checkboxItem)
+
+            const itemTaskgroup = document.createElement('span')
+            itemTaskgroup.textContent = obj[tg].title
+
+            newItem.append(itemTitle, itemTaskgroup)
+            todayTasksList.append(newItem)
+          }
+        }
+      }
+      todayTasks.append(todayTasksList)
+      todayPanel.append(todayTitle, todayTasks)
+      layoutBody.append(todayPanel)
+    }
+  }
+
   const _render = function (obj, taskgroupName) {
     main.replaceChildren()
 
@@ -193,10 +254,16 @@ const page = (function () {
 
     const layoutBody = document.createElement('div')
     layoutBody.classList.add('main-body')
-    // code if block for incoming view (maybe use taskgroupName)
-    taskgroupName
-      ? _renderTask(obj, layoutBody)
-      : _renderTaskgroup(obj, layoutBody)
+
+    if (taskgroupName) {
+      if (taskgroupName === 'Incoming') {
+        _renderIncoming(obj, layoutBody)
+      } else {
+        _renderTask(obj, layoutBody)
+      }
+    } else {
+      _renderTaskgroup(obj, layoutBody)
+    }
 
     main.append(layoutHead, layoutBody)
   }
