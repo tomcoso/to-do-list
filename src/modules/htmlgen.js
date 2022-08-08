@@ -34,7 +34,7 @@ const page = (function () {
       deck.append(taskgroup)
     }
     incomingTab.addEventListener('click', (e) => {
-      _render(data, 'Incoming')
+      _render(data, 'Overview')
     })
   }
 
@@ -228,7 +228,7 @@ const page = (function () {
       return newItem
     }
 
-    const makeTimePanel = function (time, tTitle) {
+    const _makeTimePanel = function (time, tTitle) {
       const panel = document.createElement('div')
       panel.classList.add('time-panel', time)
 
@@ -244,7 +244,7 @@ const page = (function () {
       return { panel, list, tasks }
     }
 
-    const appendToBody = function (call) {
+    const _appendToBody = function (call) {
       call.tasks.append(call.list)
       call.panel.append(call.tasks)
       layoutBody.append(call.panel)
@@ -258,76 +258,116 @@ const page = (function () {
       outdated: false,
     }
 
-    const todayTimePanel = makeTimePanel('today', 'Today')
-    const weekTimePanel = makeTimePanel('week', 'Due this week')
-    const monthTimePanel = makeTimePanel('month', 'Due this month')
-    const incomingTimePanel = makeTimePanel('incoming', 'Incoming tasks')
-    const outdatedTimePanel = makeTimePanel('outdated', 'Past due')
+    const todayTimePanel = _makeTimePanel('today', 'Today')
+    const weekTimePanel = _makeTimePanel('week', 'Due this week')
+    const monthTimePanel = _makeTimePanel('month', 'Due this month')
+    const incomingTimePanel = _makeTimePanel('incoming', 'Incoming tasks')
+    const outdatedTimePanel = _makeTimePanel('outdated', 'Past due')
 
     for (const tg in obj) {
       obj[tg].tasks.forEach((task) => {
-        const dueDate = task.dueDate
-        // TODAY--------------------------------------
-        if (format(dueDate, 'dd/MM/yy') === format(currentDate, 'dd/MM/yy')) {
-          ifCheck.today = true
-          const newItem = makeLi(task.title, obj[tg].title)
-          todayTimePanel.list.append(newItem)
-        } else if (
-          // THIS WEEK-----------------------------------
-          compareDesc(dueDate, add(currentDate, { days: 7 })) === 1 &&
-          isFuture(dueDate, currentDate)
-        ) {
-          ifCheck.thisWeek = true
-          const newItem = makeLi(task.title, obj[tg].title)
-          weekTimePanel.list.append(newItem)
-        } else if (
-          // THIS MONTH--------------------------------
-          format(dueDate, 'dd/MM/yy') !==
-            format(add(currentDate, { months: 1 }), 'dd/MM/yy') &&
-          compareDesc(dueDate, add(currentDate, { months: 1 })) === 1 &&
-          compareAsc(dueDate, add(currentDate, { days: 7 })) === 1
-        ) {
-          ifCheck.thisMonth = true
-          const newItem = makeLi(task.title, obj[tg].title)
-          monthTimePanel.list.append(newItem)
-        } else if (
-          // INCOMING---------------------------------
-          compareAsc(dueDate, add(currentDate, { months: 1 })) >= 0 ||
-          format(dueDate, 'dd/MM/yy') ===
-            format(add(currentDate, { months: 1 }), 'dd/MM/yy')
-        ) {
-          ifCheck.incoming = true
-          const newItem = makeLi(task.title, obj[tg].title)
-          incomingTimePanel.list.append(newItem)
-        } else if (
-          // PAST DUE---------------------------------
-          isPast(dueDate, currentDate) &&
-          format(dueDate, 'dd/MM/yy') !== format(currentDate, 'dd/MM/yy')
-        ) {
-          ifCheck.outdated = true
-          const newItem = makeLi(task.title, obj[tg].title)
-          outdatedTimePanel.list.append(newItem)
+        if (task.dueDate) {
+          const dueDate = task.dueDate
+          // TODAY--------------------------------------
+          if (format(dueDate, 'dd/MM/yy') === format(currentDate, 'dd/MM/yy')) {
+            ifCheck.today = true
+            const newItem = makeLi(task.title, obj[tg].title)
+            todayTimePanel.list.append(newItem)
+          } else if (
+            // THIS WEEK-----------------------------------
+            compareDesc(dueDate, add(currentDate, { days: 7 })) === 1 &&
+            isFuture(dueDate, currentDate)
+          ) {
+            ifCheck.thisWeek = true
+            const newItem = makeLi(task.title, obj[tg].title)
+            weekTimePanel.list.append(newItem)
+          } else if (
+            // THIS MONTH--------------------------------
+            format(dueDate, 'dd/MM/yy') !==
+              format(add(currentDate, { months: 1 }), 'dd/MM/yy') &&
+            compareDesc(dueDate, add(currentDate, { months: 1 })) === 1 &&
+            compareAsc(dueDate, add(currentDate, { days: 7 })) === 1
+          ) {
+            ifCheck.thisMonth = true
+            const newItem = makeLi(task.title, obj[tg].title)
+            monthTimePanel.list.append(newItem)
+            // } else if (
+            //   // INCOMING---------------------------------
+            //   compareAsc(dueDate, add(currentDate, { months: 1 })) >= 0 ||
+            //   format(dueDate, 'dd/MM/yy') ===
+            //     format(add(currentDate, { months: 1 }), 'dd/MM/yy')
+            // ) {
+            //   ifCheck.incoming = true
+            //   const newItem = makeLi(task.title, obj[tg].title)
+            //   incomingTimePanel.list.append(newItem)
+          } else if (
+            // PAST DUE---------------------------------
+            isPast(dueDate, currentDate) &&
+            format(dueDate, 'dd/MM/yy') !== format(currentDate, 'dd/MM/yy')
+          ) {
+            ifCheck.outdated = true
+            const newItem = makeLi(task.title, obj[tg].title)
+            outdatedTimePanel.list.append(newItem)
+          }
         }
       })
     }
     for (const time in ifCheck) {
       switch (true) {
-        case time && time === 'today':
-          appendToBody(todayTimePanel)
+        case ifCheck[time] && time === 'today':
+          _appendToBody(todayTimePanel)
           break
-        case time && time === 'thisWeek':
-          appendToBody(weekTimePanel)
+        case ifCheck[time] && time === 'thisWeek':
+          _appendToBody(weekTimePanel)
           break
-        case time && time === 'thisMonth':
-          appendToBody(monthTimePanel)
+        case ifCheck[time] && time === 'thisMonth':
+          _appendToBody(monthTimePanel)
           break
-        case time && time === 'incoming':
-          appendToBody(incomingTimePanel)
+        case ifCheck[time] && time === 'incoming':
+          _appendToBody(incomingTimePanel)
           break
-        case time && time === 'outdated':
-          appendToBody(outdatedTimePanel)
+        case ifCheck[time] && time === 'outdated':
+          _appendToBody(outdatedTimePanel)
           break
       }
+    }
+    const _ifNoIncoming = function () {
+      for (const time in ifCheck) {
+        if (ifCheck[time]) {
+          if (time === 'outdated') {
+            continue
+          }
+          return false
+        }
+      }
+      return true
+    }
+    if (_ifNoIncoming()) {
+      const noIncomingPanel = document.createElement('div')
+      noIncomingPanel.classList.add('no-incoming-panel')
+      const NIPMessage = document.createElement('p')
+      NIPMessage.textContent = 'There is no tasks due for this month! :)'
+      const NIPTitle = document.createElement('p')
+      NIPTitle.textContent = 'All Taskgroups'
+      noIncomingPanel.append(NIPMessage, NIPTitle)
+
+      for (const tg in obj) {
+        const taskgroup = _makeTimePanel('incoming', obj[tg].title)
+        for (const t in obj[tg].tasks) {
+          const newTask = document.createElement('li')
+          newTask.textContent = obj[tg].tasks[t].title
+          taskgroup.list.append(newTask)
+          taskgroup.panel.append(taskgroup.list)
+        }
+        noIncomingPanel.append(taskgroup.panel)
+      }
+      if (obj.length === 0) {
+        const oopsMessage = document.createElement('div')
+        oopsMessage.textContent =
+          'Oops! Seems like you have no Taskgroups yet. Go ahead and create one!'
+        noIncomingPanel.append(oopsMessage)
+      }
+      layoutBody.append(noIncomingPanel)
     }
   }
 
@@ -346,7 +386,7 @@ const page = (function () {
     layoutBody.classList.add('main-body')
 
     if (taskgroupName) {
-      if (taskgroupName === 'Incoming') {
+      if (taskgroupName === 'Overview') {
         _renderIncoming(obj, layoutBody)
       } else {
         _renderTask(obj, layoutBody)

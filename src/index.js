@@ -9,11 +9,11 @@ import { add } from 'date-fns'
   test.createTask('Task 1', 'Important', 'My Fabulous Project')
   test.createTask('Task 2', 'Unimportant')
   test.createTask('Task 3', 'Important', "Just another task -.-'")
-  test.find('Task 3').info.create('dueDate', new Date())
-  test.find('Task 2').info.create('dueDate', add(new Date(), { days: 2 }))
+  // test.find('Task 3').info.create('dueDate', new Date())
+  test.find('Task 2').info.create('dueDate', add(new Date(), { days: -2 }))
   test
     .find('Task 1')
-    .info.create('dueDate', add(new Date(), { months: 1, days: -1 }))
+    .info.create('dueDate', add(new Date(), { months: 2, days: -1 }))
   const checkTest = {
     item1: false,
     item2: false,
@@ -32,7 +32,7 @@ import { add } from 'date-fns'
   test2.find('Task 2.1').info.create('dueDate', add(new Date(), { days: -2 }))
 
   test2.createTask('Task 2.2', 'Unimportant')
-  test2.find('Task 2.2').info.create('dueDate', add(new Date(), { months: 1 }))
+  test2.find('Task 2.2').info.create('dueDate', add(new Date(), { months: 2 }))
 
   const deck = [test, test2]
   const parsedDeck = deck.map((each) => app.parseData(each))
