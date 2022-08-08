@@ -28,8 +28,11 @@ import { add } from 'date-fns'
     'Unimportant',
     'Fancy description'
   )
-  test2.createTask('Task 1', 'Important')
-  test2.find('Task 1').info.create('dueDate', add(new Date(), { days: -2 }))
+  test2.createTask('Task 2.1', 'Important')
+  test2.find('Task 2.1').info.create('dueDate', add(new Date(), { days: -2 }))
+
+  test2.createTask('Task 2.2', 'Unimportant')
+  test2.find('Task 2.2').info.create('dueDate', add(new Date(), { months: 1 }))
 
   const deck = [test, test2]
   const parsedDeck = deck.map((each) => app.parseData(each))

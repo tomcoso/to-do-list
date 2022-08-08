@@ -201,6 +201,7 @@ const page = (function () {
 
   const _renderIncoming = function (obj, layoutBody) {
     const currentDate = new Date()
+
     const makeLi = function (taskTitle, tgTitle) {
       const newItem = document.createElement('li')
       const checkboxItem = document.createElement('div')
@@ -227,6 +228,28 @@ const page = (function () {
       return newItem
     }
 
+    const makeTimePanel = function (time, tTitle) {
+      const panel = document.createElement('div')
+      panel.classList.add('time-panel', time)
+
+      const title = document.createElement('div')
+      title.textContent = tTitle
+
+      const tasks = document.createElement('div')
+      tasks.classList.add('time-panel-tasks')
+
+      panel.append(title)
+      const list = document.createElement('ul')
+
+      return { panel, list, tasks }
+    }
+
+    const appendToBody = function (call) {
+      call.tasks.append(call.list)
+      call.panel.append(call.tasks)
+      layoutBody.append(call.panel)
+    }
+
     const ifCheck = {
       today: false,
       thisWeek: false,
@@ -234,93 +257,78 @@ const page = (function () {
       incoming: false,
       outdated: false,
     }
-    for (const tg in obj) {
-      for (const t in obj[tg].tasks) {
-        if (
-          format(obj[tg].tasks[t].dueDate, 'dd/MM/yy') ===
-          format(currentDate, 'dd/MM/yy')
-        ) {
-          ifCheck.today = true
-          break
-        }
-      }
-    }
-    if (ifCheck.today) {
-      const todayPanel = document.createElement('div')
-      todayPanel.classList.add('time-panel', 'today')
 
-      const todayTitle = document.createElement('div')
-      todayTitle.textContent = 'Today'
-
-      const todayTasks = document.createElement('div')
-      todayTasks.classList.add('time-panel-tasks')
-
-      const todayTasksList = document.createElement('ul')
-      for (const tg in obj) {
-        for (const t in obj[tg].tasks) {
-          if (
-            format(obj[tg].tasks[t].dueDate, 'dd/MM/yy') ===
-            format(currentDate, 'dd/MM/yy')
-          ) {
-            const newItem = makeLi(obj[tg].tasks[t].title, obj[tg].title)
-            todayTasksList.append(newItem)
-          }
-        }
-      }
-      todayTasks.append(todayTasksList)
-      todayPanel.append(todayTitle, todayTasks)
-      layoutBody.append(todayPanel)
-    }
-    const weekPanel = document.createElement('div')
-    weekPanel.classList.add('time-panel', 'week')
-
-    const weekTitle = document.createElement('div')
-    weekTitle.textContent = 'Due this week'
-
-    const weekTasks = document.createElement('div')
-    weekTasks.classList.add('time-panel-tasks')
-
-    const weekTasksList = document.createElement('ul') // attach on ifCheck
+    const todayTimePanel = makeTimePanel('today', 'Today')
+    const weekTimePanel = makeTimePanel('week', 'Due this week')
+    const monthTimePanel = makeTimePanel('month', 'Due this month')
+    const incomingTimePanel = makeTimePanel('incoming', 'Incoming tasks')
+    const outdatedTimePanel = makeTimePanel('outdated', 'Past due')
 
     for (const tg in obj) {
       obj[tg].tasks.forEach((task) => {
         const dueDate = task.dueDate
-        if (
+        // TODAY--------------------------------------
+        if (format(dueDate, 'dd/MM/yy') === format(currentDate, 'dd/MM/yy')) {
+          ifCheck.today = true
+          const newItem = makeLi(task.title, obj[tg].title)
+          todayTimePanel.list.append(newItem)
+        } else if (
+          // THIS WEEK-----------------------------------
           compareDesc(dueDate, add(currentDate, { days: 7 })) === 1 &&
           isFuture(dueDate, currentDate)
         ) {
           ifCheck.thisWeek = true
           const newItem = makeLi(task.title, obj[tg].title)
-          weekTasksList.append(newItem)
+          weekTimePanel.list.append(newItem)
         } else if (
-          isFuture(dueDate, currentDate) &&
+          // THIS MONTH--------------------------------
+          format(dueDate, 'dd/MM/yy') !==
+            format(add(currentDate, { months: 1 }), 'dd/MM/yy') &&
           compareDesc(dueDate, add(currentDate, { months: 1 })) === 1 &&
           compareAsc(dueDate, add(currentDate, { days: 7 })) === 1
         ) {
           ifCheck.thisMonth = true
-          console.log('this month.') // THIS MONTH
-        } else if (compareAsc(dueDate, add(currentDate, { months: 1 })) >= 0) {
-          ifCheck.incoming = true
-          console.log('further than a month') // INCOMING
+          const newItem = makeLi(task.title, obj[tg].title)
+          monthTimePanel.list.append(newItem)
         } else if (
+          // INCOMING---------------------------------
+          compareAsc(dueDate, add(currentDate, { months: 1 })) >= 0 ||
+          format(dueDate, 'dd/MM/yy') ===
+            format(add(currentDate, { months: 1 }), 'dd/MM/yy')
+        ) {
+          ifCheck.incoming = true
+          const newItem = makeLi(task.title, obj[tg].title)
+          incomingTimePanel.list.append(newItem)
+        } else if (
+          // PAST DUE---------------------------------
           isPast(dueDate, currentDate) &&
           format(dueDate, 'dd/MM/yy') !== format(currentDate, 'dd/MM/yy')
         ) {
           ifCheck.outdated = true
-          console.log('outdated') // PAST DUE
+          const newItem = makeLi(task.title, obj[tg].title)
+          outdatedTimePanel.list.append(newItem)
         }
       })
     }
-    if (ifCheck.thisWeek) {
-      weekTasks.append(weekTasksList)
-      weekPanel.append(weekTitle, weekTasks)
-    } else {
-      const weekNoTasks = document.createElement('div')
-      weekNoTasks.textContent = 'No tasks due for this week'
-      weekTasks.append(weekNoTasks)
-      weekPanel.append(weekTitle, weekTasks)
+    for (const time in ifCheck) {
+      switch (true) {
+        case time && time === 'today':
+          appendToBody(todayTimePanel)
+          break
+        case time && time === 'thisWeek':
+          appendToBody(weekTimePanel)
+          break
+        case time && time === 'thisMonth':
+          appendToBody(monthTimePanel)
+          break
+        case time && time === 'incoming':
+          appendToBody(incomingTimePanel)
+          break
+        case time && time === 'outdated':
+          appendToBody(outdatedTimePanel)
+          break
+      }
     }
-    layoutBody.append(weekPanel)
   }
 
   const _render = function (obj, taskgroupName) {
@@ -351,7 +359,6 @@ const page = (function () {
   }
 
   const _viewHandler = function (obj, target) {
-    console.log([obj, target], 'initial data from listener')
     if (obj.title === target) {
       _render(obj)
     } else {
