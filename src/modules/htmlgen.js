@@ -1,5 +1,12 @@
 // import observer from './observer.js'
-import { format } from 'date-fns'
+import {
+  add,
+  compareAsc,
+  compareDesc,
+  format,
+  isFuture,
+  isPast,
+} from 'date-fns'
 const page = (function () {
   const main = document.querySelector('#main-container')
   const deck = document.querySelector('#deck')
@@ -53,7 +60,8 @@ const page = (function () {
 
     const bodyDDate = document.createElement('p')
 
-    bodyDDate.textContent = 'Due: ' + (obj.dueDate || 'Whenever')
+    bodyDDate.textContent =
+      'Due: ' + (obj.dueDate ? format(obj.dueDate, 'dd/MM/yy') : 'Whenever')
 
     const bodyDelBtn = document.createElement('button')
     bodyDelBtn.setAttribute('type', 'button')
@@ -123,7 +131,8 @@ const page = (function () {
     bodyPriority.classList.add('body-priority')
 
     const bodyDDate = document.createElement('p')
-    bodyDDate.textContent = 'Due: ' + (obj.dueDate || 'Whenever')
+    bodyDDate.textContent =
+      'Due: ' + (obj.dueDate ? format(obj.dueDate, 'dd/MM/yy') : 'Whenever')
 
     const bodyDesc = document.createElement('div')
     bodyDesc.classList.add('body-description')
@@ -158,7 +167,11 @@ const page = (function () {
 
       const taskDDate = document.createElement('p')
       taskDDate.classList.add('task-ddate')
-      taskDDate.textContent = 'Due: ' + (obj.tasks[task].dueDate || 'Whenever')
+      taskDDate.textContent =
+        'Due: ' +
+        (obj.tasks[task].dueDate
+          ? format(obj.tasks[task].dueDate, 'dd/MM/yy')
+          : 'Whenever')
 
       const taskPriority = document.createElement('p')
       taskPriority.classList.add('task-priority')
@@ -187,16 +200,52 @@ const page = (function () {
   }
 
   const _renderIncoming = function (obj, layoutBody) {
-    const currentDate = format(new Date(), 'dd/MM/yy')
-    let ifToday = false
+    const currentDate = new Date()
+    const makeLi = function (taskTitle, tgTitle) {
+      const newItem = document.createElement('li')
+      const checkboxItem = document.createElement('div')
+
+      const id = 'id' + Math.random().toString(16).slice(2)
+      const checkboxLabel = document.createElement('label')
+      checkboxLabel.setAttribute('for', id)
+      checkboxLabel.textContent = taskTitle
+
+      const checkboxInput = document.createElement('input')
+      checkboxInput.setAttribute('type', 'checkbox')
+      checkboxInput.setAttribute('id', id)
+
+      checkboxItem.append(checkboxInput, checkboxLabel)
+
+      const itemTitle = document.createElement('span')
+      itemTitle.append(checkboxItem)
+
+      const itemTaskgroup = document.createElement('span')
+      itemTaskgroup.textContent = tgTitle
+
+      newItem.append(itemTitle, itemTaskgroup)
+
+      return newItem
+    }
+
+    const ifCheck = {
+      today: false,
+      thisWeek: false,
+      thisMonth: false,
+      incoming: false,
+      outdated: false,
+    }
     for (const tg in obj) {
       for (const t in obj[tg].tasks) {
-        if (obj[tg].tasks[t].dueDate === currentDate) {
-          ifToday = true
+        if (
+          format(obj[tg].tasks[t].dueDate, 'dd/MM/yy') ===
+          format(currentDate, 'dd/MM/yy')
+        ) {
+          ifCheck.today = true
+          break
         }
       }
     }
-    if (ifToday) {
+    if (ifCheck.today) {
       const todayPanel = document.createElement('div')
       todayPanel.classList.add('time-panel', 'today')
 
@@ -209,28 +258,11 @@ const page = (function () {
       const todayTasksList = document.createElement('ul')
       for (const tg in obj) {
         for (const t in obj[tg].tasks) {
-          if (obj[tg].tasks[t].dueDate === currentDate) {
-            const newItem = document.createElement('li')
-            const checkboxItem = document.createElement('div')
-
-            const id = 'id' + Math.random().toString(16).slice(2)
-            const checkboxLabel = document.createElement('label')
-            checkboxLabel.setAttribute('for', id)
-            checkboxLabel.textContent = obj[tg].tasks[t].title
-
-            const checkboxInput = document.createElement('input')
-            checkboxInput.setAttribute('type', 'checkbox')
-            checkboxInput.setAttribute('id', id)
-
-            checkboxItem.append(checkboxInput, checkboxLabel)
-
-            const itemTitle = document.createElement('span')
-            itemTitle.append(checkboxItem)
-
-            const itemTaskgroup = document.createElement('span')
-            itemTaskgroup.textContent = obj[tg].title
-
-            newItem.append(itemTitle, itemTaskgroup)
+          if (
+            format(obj[tg].tasks[t].dueDate, 'dd/MM/yy') ===
+            format(currentDate, 'dd/MM/yy')
+          ) {
+            const newItem = makeLi(obj[tg].tasks[t].title, obj[tg].title)
             todayTasksList.append(newItem)
           }
         }
@@ -239,6 +271,56 @@ const page = (function () {
       todayPanel.append(todayTitle, todayTasks)
       layoutBody.append(todayPanel)
     }
+    const weekPanel = document.createElement('div')
+    weekPanel.classList.add('time-panel', 'week')
+
+    const weekTitle = document.createElement('div')
+    weekTitle.textContent = 'Due this week'
+
+    const weekTasks = document.createElement('div')
+    weekTasks.classList.add('time-panel-tasks')
+
+    const weekTasksList = document.createElement('ul') // attach on ifCheck
+
+    for (const tg in obj) {
+      obj[tg].tasks.forEach((task) => {
+        const dueDate = task.dueDate
+        if (
+          compareDesc(dueDate, add(currentDate, { days: 7 })) === 1 &&
+          isFuture(dueDate, currentDate)
+        ) {
+          ifCheck.thisWeek = true
+          const newItem = makeLi(task.title, obj[tg].title)
+          weekTasksList.append(newItem)
+        } else if (
+          isFuture(dueDate, currentDate) &&
+          compareDesc(dueDate, add(currentDate, { months: 1 })) === 1 &&
+          compareAsc(dueDate, add(currentDate, { days: 7 })) === 1
+        ) {
+          ifCheck.thisMonth = true
+          console.log('this month.') // THIS MONTH
+        } else if (compareAsc(dueDate, add(currentDate, { months: 1 })) >= 0) {
+          ifCheck.incoming = true
+          console.log('further than a month') // INCOMING
+        } else if (
+          isPast(dueDate, currentDate) &&
+          format(dueDate, 'dd/MM/yy') !== format(currentDate, 'dd/MM/yy')
+        ) {
+          ifCheck.outdated = true
+          console.log('outdated') // PAST DUE
+        }
+      })
+    }
+    if (ifCheck.thisWeek) {
+      weekTasks.append(weekTasksList)
+      weekPanel.append(weekTitle, weekTasks)
+    } else {
+      const weekNoTasks = document.createElement('div')
+      weekNoTasks.textContent = 'No tasks due for this week'
+      weekTasks.append(weekNoTasks)
+      weekPanel.append(weekTitle, weekTasks)
+    }
+    layoutBody.append(weekPanel)
   }
 
   const _render = function (obj, taskgroupName) {
