@@ -153,7 +153,16 @@ const page = (function () {
     tasksNewBtn.setAttribute('type', 'button')
     tasksNewBtn.textContent = 'New Task'
 
-    tasksHeader.append(tasksHeaderTitle, tasksNewBtn)
+    tasksHeader.append(tasksHeaderTitle)
+
+    if (obj.tasks.length === 0) {
+      const oopsMessage = document.createElement('p')
+      oopsMessage.innerHTML =
+        'Looks like you have no tasks ;_; <br>Go ahead and create one!'
+      tasksHeader.append(oopsMessage)
+    }
+
+    tasksHeader.append(tasksNewBtn)
 
     const tasksList = document.createElement('div')
 
