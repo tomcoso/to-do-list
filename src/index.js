@@ -3,6 +3,7 @@ import app from './modules/application.js'
 import page from './modules/htmlgen.js'
 import { add } from 'date-fns'
 // import observer from './modules/observer.js'
+import observer from './modules/observer'
 ;(function () {
   const test = app.Taskgroup('My First Project', 'Important')
 
@@ -40,8 +41,4 @@ import { add } from 'date-fns'
   const parsedDeck = deck.map((each) => app.parseData(each))
 
   page.attach(parsedDeck)
-
-  // observer.subscribe('viewRequest', (data) =>
-  //   page.viewHandler(data, parsedDeck)
-  // )
 })()

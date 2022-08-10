@@ -11,8 +11,10 @@ const page = (function () {
   const main = document.querySelector('#main-container')
   const deck = document.querySelector('#deck')
   const incomingTab = document.querySelector('.incoming-wrap div')
+  let deckData
 
   const attach = function (data) {
+    deckData = data
     for (let i = 0; i < data.length; i++) {
       const taskgroup = document.createElement('ul')
       taskgroup.textContent = data[i].title
@@ -36,6 +38,7 @@ const page = (function () {
     incomingTab.addEventListener('click', (e) => {
       _render(data, 'Overview')
     })
+    _render(data, 'Overview')
   }
 
   const _renderTask = function (obj, layoutBody) {
@@ -194,12 +197,20 @@ const page = (function () {
       tasksCompleteBtn.setAttribute('type', 'button')
       tasksCompleteBtn.textContent = 'Complete'
 
+      const viewBtn = document.createElement('button')
+      viewBtn.setAttribute('type', 'button')
+      viewBtn.textContent = 'View'
+      viewBtn.addEventListener('click', () =>
+        _render(obj.tasks[task], obj.title)
+      )
+
       newTask.append(
         taskTitle,
         taskDDate,
         taskPriority,
         tasksDelBtn,
-        tasksCompleteBtn
+        tasksCompleteBtn,
+        viewBtn
       )
 
       tasksList.append(newTask)
@@ -229,10 +240,19 @@ const page = (function () {
       const itemTitle = document.createElement('span')
       itemTitle.append(checkboxItem)
 
+      const viewSpan = document.createElement('span')
+      viewSpan.textContent = 'view'
+      viewSpan.addEventListener('click', () => {
+        for (let i = 0; i < deckData.length; i++) {
+          if (deckData[i].title === tgTitle)
+            _viewHandler(deckData[i], taskTitle)
+        }
+      })
+
       const itemTaskgroup = document.createElement('span')
       itemTaskgroup.textContent = tgTitle
 
-      newItem.append(itemTitle, itemTaskgroup)
+      newItem.append(itemTitle, viewSpan, itemTaskgroup)
 
       return newItem
     }
@@ -300,15 +320,6 @@ const page = (function () {
             ifCheck.thisMonth = true
             const newItem = makeLi(task.title, obj[tg].title)
             monthTimePanel.list.append(newItem)
-            // } else if (
-            //   // INCOMING---------------------------------
-            //   compareAsc(dueDate, add(currentDate, { months: 1 })) >= 0 ||
-            //   format(dueDate, 'dd/MM/yy') ===
-            //     format(add(currentDate, { months: 1 }), 'dd/MM/yy')
-            // ) {
-            //   ifCheck.incoming = true
-            //   const newItem = makeLi(task.title, obj[tg].title)
-            //   incomingTimePanel.list.append(newItem)
           } else if (
             // PAST DUE---------------------------------
             isPast(dueDate, currentDate) &&
@@ -418,10 +429,6 @@ const page = (function () {
       }
     }
   }
-
-  // const test = function (data) {
-  //   console.log(data)
-  // }
   return { attach }
 })()
 
