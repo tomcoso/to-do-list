@@ -222,7 +222,7 @@ const page = (function () {
   const _renderIncoming = function (obj, layoutBody) {
     const currentDate = new Date()
 
-    const makeLi = function (taskTitle, tgTitle) {
+    const _makeLi = function (taskTitle, tgTitle) {
       const newItem = document.createElement('li')
       const checkboxItem = document.createElement('div')
 
@@ -300,7 +300,7 @@ const page = (function () {
           // TODAY--------------------------------------
           if (format(dueDate, 'dd/MM/yy') === format(currentDate, 'dd/MM/yy')) {
             ifCheck.today = true
-            const newItem = makeLi(task.title, obj[tg].title)
+            const newItem = _makeLi(task.title, obj[tg].title)
             todayTimePanel.list.append(newItem)
           } else if (
             // THIS WEEK-----------------------------------
@@ -308,7 +308,7 @@ const page = (function () {
             isFuture(dueDate, currentDate)
           ) {
             ifCheck.thisWeek = true
-            const newItem = makeLi(task.title, obj[tg].title)
+            const newItem = _makeLi(task.title, obj[tg].title)
             weekTimePanel.list.append(newItem)
           } else if (
             // THIS MONTH--------------------------------
@@ -318,7 +318,7 @@ const page = (function () {
             compareAsc(dueDate, add(currentDate, { days: 7 })) === 1
           ) {
             ifCheck.thisMonth = true
-            const newItem = makeLi(task.title, obj[tg].title)
+            const newItem = _makeLi(task.title, obj[tg].title)
             monthTimePanel.list.append(newItem)
           } else if (
             // PAST DUE---------------------------------
@@ -326,7 +326,7 @@ const page = (function () {
             format(dueDate, 'dd/MM/yy') !== format(currentDate, 'dd/MM/yy')
           ) {
             ifCheck.outdated = true
-            const newItem = makeLi(task.title, obj[tg].title)
+            const newItem = _makeLi(task.title, obj[tg].title)
             outdatedTimePanel.list.append(newItem)
           }
         }
@@ -400,6 +400,12 @@ const page = (function () {
     const headTitle = document.createElement('div')
     headTitle.classList.add('head-title')
     headTitle.textContent = taskgroupName || obj.title
+    headTitle.addEventListener('click', () =>
+      _viewHandler(
+        deckData.filter((x) => x.title === taskgroupName)[0],
+        taskgroupName
+      )
+    )
     layoutHead.append(headTitle)
 
     const layoutBody = document.createElement('div')
