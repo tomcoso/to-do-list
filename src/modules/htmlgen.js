@@ -1,4 +1,4 @@
-// import observer from './observer.js'
+import observer from './observer.js'
 import {
   add,
   compareAsc,
@@ -12,6 +12,7 @@ const page = (function () {
   const deck = document.querySelector('#deck')
   const incomingTab = document.querySelector('.incoming-wrap div')
   let deckData
+  const newTg = document.querySelector('#new-taskgroup')
 
   const attach = function (data) {
     deckData = data
@@ -39,6 +40,51 @@ const page = (function () {
       _render(data, 'Overview')
     })
     _render(data, 'Overview')
+  }
+
+  const _render = function (obj, taskgroupName) {
+    main.replaceChildren()
+
+    const layoutHead = document.createElement('div')
+    layoutHead.classList.add('main-head')
+
+    const headTitle = document.createElement('div')
+    headTitle.classList.add('head-title')
+    headTitle.textContent = taskgroupName || obj.title
+    headTitle.addEventListener('click', () =>
+      _viewHandler(
+        deckData.filter((x) => x.title === taskgroupName)[0],
+        taskgroupName
+      )
+    )
+    layoutHead.append(headTitle)
+
+    const layoutBody = document.createElement('div')
+    layoutBody.classList.add('main-body')
+
+    if (taskgroupName) {
+      if (taskgroupName === 'Overview') {
+        _renderIncoming(obj, layoutBody)
+      } else {
+        _renderTask(obj, layoutBody)
+      }
+    } else {
+      _renderTaskgroup(obj, layoutBody)
+    }
+
+    main.append(layoutHead, layoutBody)
+  }
+
+  const _viewHandler = function (obj, target) {
+    if (obj.title === target) {
+      _render(obj)
+    } else {
+      for (const task in obj.tasks) {
+        if (obj.tasks[task].title === target) {
+          _render(obj.tasks[task], obj.title)
+        }
+      }
+    }
   }
 
   const _renderTask = function (obj, layoutBody) {
@@ -155,6 +201,9 @@ const page = (function () {
     const tasksNewBtn = document.createElement('button')
     tasksNewBtn.setAttribute('type', 'button')
     tasksNewBtn.textContent = 'New Task'
+    tasksNewBtn.addEventListener('click', () =>
+      observer.publish('newObject', ['task', obj.title])
+    )
 
     tasksHeader.append(tasksHeaderTitle)
 
@@ -391,50 +440,10 @@ const page = (function () {
     }
   }
 
-  const _render = function (obj, taskgroupName) {
-    main.replaceChildren()
+  newTg.addEventListener('click', () => {
+    observer.publish('newObject', 'taskgroup')
+  })
 
-    const layoutHead = document.createElement('div')
-    layoutHead.classList.add('main-head')
-
-    const headTitle = document.createElement('div')
-    headTitle.classList.add('head-title')
-    headTitle.textContent = taskgroupName || obj.title
-    headTitle.addEventListener('click', () =>
-      _viewHandler(
-        deckData.filter((x) => x.title === taskgroupName)[0],
-        taskgroupName
-      )
-    )
-    layoutHead.append(headTitle)
-
-    const layoutBody = document.createElement('div')
-    layoutBody.classList.add('main-body')
-
-    if (taskgroupName) {
-      if (taskgroupName === 'Overview') {
-        _renderIncoming(obj, layoutBody)
-      } else {
-        _renderTask(obj, layoutBody)
-      }
-    } else {
-      _renderTaskgroup(obj, layoutBody)
-    }
-
-    main.append(layoutHead, layoutBody)
-  }
-
-  const _viewHandler = function (obj, target) {
-    if (obj.title === target) {
-      _render(obj)
-    } else {
-      for (const task in obj.tasks) {
-        if (obj.tasks[task].title === target) {
-          _render(obj.tasks[task], obj.title)
-        }
-      }
-    }
-  }
   return { attach }
 })()
 

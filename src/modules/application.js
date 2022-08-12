@@ -5,14 +5,12 @@ const app = (function () {
     title,
     priority,
     description = 'This is my glorious project',
-    notes = null,
     dueDate = null
   ) {
     const data = {
       title,
       priority,
       description,
-      notes,
       dueDate,
       creationDate: format(new Date(), 'dd/MM/yy'),
       completed: false,
@@ -40,7 +38,7 @@ const app = (function () {
       }
     }
     const deleteProperty = function (prop) {
-      if (data[prop] === dueDate || data[prop] === notes) {
+      if (data[prop] === dueDate) {
         data[prop] = null
       } else {
         throw new Error('Property cannot be deleted')
@@ -121,7 +119,6 @@ const app = (function () {
         description: item.info.read('description'),
         creationDate: item.info.read('creationDate'),
         dueDate: item.info.read('dueDate'),
-        notes: item.info.read('notes'),
         completed: item.info.read('completed'),
         checkbox: item.checkbox || false,
       }
