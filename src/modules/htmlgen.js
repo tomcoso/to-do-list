@@ -112,7 +112,8 @@ const page = (function () {
     const bodyDDate = document.createElement('p')
 
     bodyDDate.textContent =
-      'Due: ' + (obj.dueDate ? format(obj.dueDate, 'dd/MM/yy') : 'Whenever')
+      'Due: ' +
+      (obj.dueDate ? format(new Date(obj.dueDate), 'dd/MM/yy') : 'Whenever')
 
     const bodyDelBtn = document.createElement('button')
     bodyDelBtn.setAttribute('type', 'button')
@@ -183,7 +184,8 @@ const page = (function () {
 
     const bodyDDate = document.createElement('p')
     bodyDDate.textContent =
-      'Due: ' + (obj.dueDate ? format(obj.dueDate, 'dd/MM/yy') : 'Whenever')
+      'Due: ' +
+      (obj.dueDate ? format(new Date(obj.dueDate), 'dd/MM/yy') : 'Whenever')
 
     const bodyDesc = document.createElement('div')
     bodyDesc.classList.add('body-description')
@@ -233,7 +235,7 @@ const page = (function () {
       taskDDate.textContent =
         'Due: ' +
         (obj.tasks[task].dueDate
-          ? format(obj.tasks[task].dueDate, 'dd/MM/yy')
+          ? format(new Date(obj.tasks[task].dueDate), 'dd/MM/yy')
           : 'Whenever')
 
       const taskPriority = document.createElement('p')
@@ -347,7 +349,7 @@ const page = (function () {
     for (const tg in obj) {
       obj[tg].tasks.forEach((task) => {
         if (task.dueDate) {
-          const dueDate = task.dueDate
+          const dueDate = new Date(task.dueDate)
           // TODAY--------------------------------------
           if (format(dueDate, 'dd/MM/yy') === format(currentDate, 'dd/MM/yy')) {
             ifCheck.today = true

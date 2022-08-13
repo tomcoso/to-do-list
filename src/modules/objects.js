@@ -181,7 +181,6 @@ const object = (function () {
       }
     }
 
-    console.log('data sent!')
     observer.publish('sentNewObjectData', data)
   }
 

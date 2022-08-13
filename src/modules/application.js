@@ -138,7 +138,34 @@ const app = (function () {
     }
   }
 
-  return { Taskgroup, parseData }
+  const unparseData = function (data) {
+    const objectDeck = []
+    for (const each of data) {
+      const eachTaskgroup = Taskgroup(
+        each.title,
+        each.priority,
+        each.description,
+        new Date(each.dueDate)
+      )
+      if (each.tasks) {
+        for (const task of each.tasks) {
+          eachTaskgroup.createTask(
+            task.title,
+            task.priority,
+            task.description,
+            new Date(task.dueDate)
+          )
+          if (task.checkbox) {
+            eachTaskgroup.find(task.title).setCheckbox(task.checkbox)
+          }
+        }
+      }
+      objectDeck.push(eachTaskgroup)
+    }
+    return objectDeck
+  }
+
+  return { Taskgroup, parseData, unparseData }
 })()
 
 export default app
