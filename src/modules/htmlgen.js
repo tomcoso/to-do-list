@@ -14,8 +14,13 @@ const page = (function () {
   let deckData
   const newTg = document.querySelector('#new-taskgroup')
 
+  incomingTab.addEventListener('click', (e) => {
+    _render(deckData, 'Overview')
+  })
+
   const attach = function (data) {
     deckData = data
+    deck.replaceChildren()
     for (let i = 0; i < data.length; i++) {
       const taskgroup = document.createElement('ul')
       taskgroup.textContent = data[i].title
@@ -36,9 +41,6 @@ const page = (function () {
       }
       deck.append(taskgroup)
     }
-    incomingTab.addEventListener('click', (e) => {
-      _render(data, 'Overview')
-    })
     _render(data, 'Overview')
   }
 

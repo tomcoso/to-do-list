@@ -69,15 +69,29 @@ const object = (function () {
 
     pageWrap.append(popupPanel)
 
-    // const submit = document.querySelector('#object-form button:last-child')
-    form.addEventListener('submit', _send)
+    const submit = document.querySelector('#submit-button')
+    submit.addEventListener('click', () => {
+      _send(type)
+      popupPanel.remove()
+    })
+    const cancel = document.querySelector('#cancel-button')
+    cancel.addEventListener('click', () => popupPanel.remove())
   }
 
   const _openNewTgPanel = function (popupPanel, form) {
     const panelInfo = _newTag('p', { innerText: 'Create Taskgroup' })
     popupPanel.insertAdjacentElement('afterbegin', panelInfo)
-    const submit = _newTag('button', { type: 'submit', innerText: 'Create' })
-    form.append(submit)
+    const submit = _newTag('button', {
+      type: 'button',
+      innerText: 'Create',
+      id: 'submit-button',
+    })
+    const cancel = _newTag('button', {
+      type: 'button',
+      innerText: 'Cancel',
+      id: 'cancel-button',
+    })
+    form.append(submit, cancel)
   }
 
   const _openNewTaskPanel = function (popupPanel, form, taskgroup) {
@@ -98,7 +112,7 @@ const object = (function () {
     checkboxField.classList.add('hidden')
 
     const fieldFieldset = document.createElement('fieldset')
-    const fieldInfo = _newTag('p', { innerText: 'Current Items :' })
+    const fieldInfo = _newTag('legend', { innerText: 'Current Items' })
     fieldFieldset.append(fieldInfo)
 
     const newCheckDiv = document.createElement('div')
@@ -136,16 +150,39 @@ const object = (function () {
 
     form.append(checkbox)
 
-    const submit = _newTag('button', { type: 'submit', innerText: 'Add' })
-    form.append(submit)
+    const submit = _newTag('button', {
+      type: 'button',
+      innerText: 'Add',
+      id: 'submit-button',
+    })
+    const cancel = _newTag('button', {
+      type: 'button',
+      innerText: 'Cancel',
+      id: 'cancel-button',
+    })
+    form.append(submit, cancel)
   }
 
-  const _send = function () {
-    let data
-    // grab all the data
-    // send it to index
-    observer.publish('sentNewObjectData', data)
+  const _send = function (type) {
+    const data = {}
+    data.title = document.querySelector('#object-form #title').value
+    data.priority = document.querySelector('#object-form #priority').value
+    data.description = document.querySelector('#object-form #description').value
+    data.dueDate = document.querySelector('#object-form #due-date').value
+    data.type = type
+
+    if (document.querySelector('#object-form #if-checkbox')) {
+      const checkboxList = document.querySelectorAll(
+        '#checkbox-fieldset > fieldset > div > label'
+      )
+      data.checkbox = {}
+      for (const i of checkboxList) {
+        data.checkbox[i.textContent] = false
+      }
+    }
+
     console.log('data sent!')
+    observer.publish('sentNewObjectData', data)
   }
 
   observer.subscribe('newObject', _createPopup)

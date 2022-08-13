@@ -44,11 +44,35 @@ import observer from './modules/observer.js'
 
     return deck
   })()
-  const parsedDeck = deck.map((each) => app.parseData(each))
 
-  page.attach(parsedDeck)
+  const parseAndAttach = function () {
+    const parsedDeck = deck.map((each) => app.parseData(each))
+    page.attach(parsedDeck)
+  }
+
+  parseAndAttach()
+
+  const createObjectFromDOM = function (data) {
+    if (!Array.isArray(data.type)) {
+      const newTg = app.Taskgroup(data.title, data.priority)
+      if (data.description) newTg.info.update('description', data.description)
+      if (data.dueDate) newTg.info.update('dueDate', new Date(data.dueDate))
+      deck.push(newTg)
+    } else if (Array.isArray(data.type)) {
+      const tg = deck.filter((x) => x.info.read('title') === data.type[1])[0]
+      tg.createTask(data.title, data.priority)
+      const newTask = tg.find(data.title)
+      if (data.description) newTask.info.update('description', data.description)
+      if (data.dueDate) newTask.info.update('dueDate', new Date(data.dueDate))
+      if (data.checkbox) newTask.setCheckbox(data.checkbox)
+    }
+    console.log('Object created!')
+    parseAndAttach()
+    console.log('Sidebar refreshed!')
+  }
 
   observer.subscribe('sentNewObjectData', (data) => {
     console.log('data received!!')
+    createObjectFromDOM(data)
   })
 })()
