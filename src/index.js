@@ -14,8 +14,8 @@ import observer from './modules/observer.js'
   const deckObj = app.unparseData(deck)
 
   const attachAndSave = function () {
-    page.attach(deck)
     storage.saveData(deck)
+    page.attach(deck)
   }
 
   const createObjectFromDOM = function (data) {
@@ -32,14 +32,33 @@ import observer from './modules/observer.js'
       if (data.dueDate) newTask.info.update('dueDate', new Date(data.dueDate))
       if (data.checkbox) newTask.setCheckbox(data.checkbox)
     }
-    console.log(deckObj)
     deck = deckObj.map((x) => app.parseData(x))
     attachAndSave()
   }
 
-  observer.subscribe('sentNewObjectData', (data) => {
-    createObjectFromDOM(data)
-  })
+  const deleteObject = function (data) {
+    console.log(data)
+    if (!data[1]) {
+      for (let i = 0; i < deckObj.length; i++) {
+        if (data[0] === deckObj[i].info.read('title')) {
+          deckObj.splice(i, 1)
+        }
+      }
+    } else {
+      for (const tg of deckObj) {
+        if (data[1] === tg.info.read('title')) {
+          tg.deleteTask(tg.find(data[0]))
+        }
+      }
+    }
+    deck = deckObj.map((x) => app.parseData(x))
+    console.log(deck)
+    attachAndSave()
+  }
+
+  observer.subscribe('sentNewObjectData', createObjectFromDOM)
+
+  observer.subscribe('sentDelObjectData', deleteObject)
 
   attachAndSave()
 })()

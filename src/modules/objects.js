@@ -69,7 +69,6 @@ const object = (function () {
 
     pageWrap.append(popupPanel)
 
-    // const submit = document.querySelector('#submit-button')
     form.addEventListener('submit', () => {
       _send(type)
     })
@@ -183,7 +182,43 @@ const object = (function () {
     observer.publish('sentNewObjectData', data)
   }
 
+  const _deletePopup = function (data) {
+    const pageWrap = document.querySelector('#page-wrapper')
+
+    const popupPanel = _newTag('div', {
+      id: 'del-popup-panel',
+      style: 'position: absolute; background-color: white;',
+    })
+    if (Array.isArray(data)) {
+      const prompt = _newTag('p', {
+        textContent: `Are you sure you want to delete ${data[0]}?`,
+      })
+      popupPanel.append(prompt)
+    } else {
+      const prompt = _newTag('p', {
+        textContent: `Are you sure you want to delete ${data}?`,
+      })
+      popupPanel.append(prompt)
+    }
+    const yesBtn = _newTag('button', { textContent: 'Delete', type: 'button' })
+    const noBtn = _newTag('button', { textContent: 'Cancel', type: 'button' })
+    popupPanel.append(yesBtn, noBtn)
+    pageWrap.append(popupPanel)
+
+    yesBtn.addEventListener('click', () => {
+      if (Array.isArray(data)) {
+        observer.publish('sentDelObjectData', [...data])
+        popupPanel.remove()
+      } else {
+        observer.publish('sentDelObjectData', [data])
+        popupPanel.remove()
+      }
+    })
+    noBtn.addEventListener('click', () => popupPanel.remove())
+  }
+
   observer.subscribe('newObject', _createPopup)
+  observer.subscribe('deleteObject', _deletePopup)
 
   return {}
 })()

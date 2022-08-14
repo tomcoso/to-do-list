@@ -53,13 +53,25 @@ const page = (function () {
     const headTitle = document.createElement('div')
     headTitle.classList.add('head-title')
     headTitle.textContent = taskgroupName || obj.title
-    headTitle.addEventListener('click', () =>
-      _viewHandler(
-        deckData.filter((x) => x.title === taskgroupName)[0],
-        taskgroupName
-      )
-    )
+    headTitle.addEventListener('click', () => {
+      if (taskgroupName) {
+        _viewHandler(
+          deckData.filter((x) => x.title === taskgroupName)[0],
+          taskgroupName
+        )
+      }
+    })
     layoutHead.append(headTitle)
+    if (!taskgroupName) {
+      const delBtn = document.createElement('button')
+      delBtn.textContent = 'Delete'
+      delBtn.setAttribute('type', 'button')
+      delBtn.setAttribute('id', 'del-taskgroup')
+      delBtn.addEventListener('click', () =>
+        observer.publish('deleteObject', obj.title)
+      )
+      layoutHead.append(delBtn)
+    }
 
     const layoutBody = document.createElement('div')
     layoutBody.classList.add('main-body')
@@ -118,6 +130,12 @@ const page = (function () {
     const bodyDelBtn = document.createElement('button')
     bodyDelBtn.setAttribute('type', 'button')
     bodyDelBtn.textContent = 'Delete'
+    bodyDelBtn.addEventListener('click', () =>
+      observer.publish('deleteObject', [
+        obj.title,
+        document.querySelector('.head-title').textContent,
+      ])
+    )
 
     const bodyCompleteBtn = document.createElement('button')
     bodyCompleteBtn.setAttribute('type', 'button')
@@ -245,6 +263,9 @@ const page = (function () {
       const tasksDelBtn = document.createElement('button')
       tasksDelBtn.setAttribute('type', 'button')
       tasksDelBtn.textContent = 'Delete'
+      tasksDelBtn.addEventListener('click', () =>
+        observer.publish('deleteObject', [obj.tasks[task].title, obj.title])
+      )
 
       const tasksCompleteBtn = document.createElement('button')
       tasksCompleteBtn.setAttribute('type', 'button')
