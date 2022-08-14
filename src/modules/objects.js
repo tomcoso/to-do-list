@@ -69,10 +69,9 @@ const object = (function () {
 
     pageWrap.append(popupPanel)
 
-    const submit = document.querySelector('#submit-button')
-    submit.addEventListener('click', () => {
+    // const submit = document.querySelector('#submit-button')
+    form.addEventListener('submit', () => {
       _send(type)
-      popupPanel.remove()
     })
     const cancel = document.querySelector('#cancel-button')
     cancel.addEventListener('click', () => popupPanel.remove())
@@ -82,7 +81,7 @@ const object = (function () {
     const panelInfo = _newTag('p', { innerText: 'Create Taskgroup' })
     popupPanel.insertAdjacentElement('afterbegin', panelInfo)
     const submit = _newTag('button', {
-      type: 'button',
+      type: 'submit',
       innerText: 'Create',
       id: 'submit-button',
     })
@@ -151,7 +150,7 @@ const object = (function () {
     form.append(checkbox)
 
     const submit = _newTag('button', {
-      type: 'button',
+      type: 'submit',
       innerText: 'Add',
       id: 'submit-button',
     })
