@@ -42,7 +42,13 @@ const object = (function () {
     const description = document.createElement('div')
     const descLabel = _newTag('label', { innerText: 'Description' })
     descLabel.setAttribute('for', 'description')
-    const descInput = _newTag('textarea', { id: 'description', required: true })
+    const descInput = _newTag('textarea', {
+      id: 'description',
+      required: true,
+      value: "An interesting description!!    -.-'",
+      rows: '5',
+      cols: '40',
+    })
     description.append(descLabel, descInput)
 
     // DUE DATE
