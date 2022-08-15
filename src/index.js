@@ -59,20 +59,38 @@ import observer from './modules/observer.js'
     const task = deckObj
       .find((tg) => tg.info.read('title') === data[1])
       .find(data[0])
-    task.info.read('completed')
-      ? task.info.update('completed', false)
-      : task.info.update('completed', true)
+    if (task.info.read('completed')) {
+      task.info.update('completed', false)
+      if (task.checkbox) {
+        for (const item in task.checkbox) {
+          task.checkbox[item] = false
+        }
+      }
+    } else {
+      task.info.update('completed', true)
+      if (task.checkbox) {
+        for (const item in task.checkbox) {
+          task.checkbox[item] = true
+        }
+      }
+    }
+
     deck = deckObj.map((x) => app.parseData(x))
     if (data[2] === 'task') {
       attachAndSave([data[0], data[1]])
     } else {
       attachAndSave(data[2])
     }
-    console.log(
-      deck
-        .find((tg) => tg.title === data[1])
-        .tasks.find((t) => t.title === data[0])
-    )
+  }
+
+  const markCheckbox = function (data) {
+    const taskgroup = deckObj.find((tg) => tg.info.read('title') === data[2])
+    const task = taskgroup.find(data[1])
+    task.checkbox[data[0]]
+      ? task.updateCheckbox(data[0], false)
+      : task.updateCheckbox(data[0], true)
+    deck = deckObj.map((x) => app.parseData(x))
+    attachAndSave([data[1], data[2]])
   }
 
   observer.subscribe('sentNewObjectData', createObjectFromDOM)
@@ -80,6 +98,8 @@ import observer from './modules/observer.js'
   observer.subscribe('sentDelObjectData', deleteObject)
 
   observer.subscribe('completeTask', completeTask)
+
+  observer.subscribe('markTaskCheckbox', markCheckbox)
 
   attachAndSave()
 })()

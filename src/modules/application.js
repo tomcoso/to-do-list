@@ -5,16 +5,18 @@ const app = (function () {
     title,
     priority,
     description = 'This is my glorious project',
-    dueDate = null
+    dueDate = null,
+    creationDate = format(new Date(), 'dd/MM/yy'),
+    completed
   ) {
     const data = {
       title,
       priority,
       description,
       dueDate,
-      creationDate: format(new Date(), 'dd/MM/yy'),
-      completed: false,
+      creationDate,
     }
+    data.completed = !!completed
 
     const read = function (prop) {
       return data[prop]
@@ -66,6 +68,9 @@ const app = (function () {
       }
       for (const each in checkbox) {
         if (!checkbox[each]) {
+          if (this.info.read('completed')) {
+            this.info.update('completed', false)
+          }
           return
         }
       }
@@ -143,7 +148,9 @@ const app = (function () {
         each.title,
         each.priority,
         each.description,
-        new Date(each.dueDate)
+        new Date(each.dueDate),
+        each.creationDate,
+        each.completed
       )
       if (each.tasks) {
         for (const task of each.tasks) {
@@ -151,7 +158,9 @@ const app = (function () {
             task.title,
             task.priority,
             task.description,
-            new Date(task.dueDate)
+            new Date(task.dueDate),
+            task.creationDate,
+            task.completed
           )
           if (task.checkbox) {
             eachTaskgroup.find(task.title).setCheckbox(task.checkbox)

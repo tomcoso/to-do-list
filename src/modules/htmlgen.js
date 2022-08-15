@@ -201,6 +201,14 @@ const page = (function () {
         const checkboxInput = document.createElement('input')
         checkboxInput.setAttribute('type', 'checkbox')
         checkboxInput.setAttribute('id', id)
+        if (obj.checkbox[item]) {
+          checkboxInput.setAttribute('checked', '')
+          checkboxItem.classList.add('completed')
+        }
+        checkboxInput.addEventListener('change', () => {
+          const taskgroup = document.querySelector('.head-title').textContent
+          observer.publish('markTaskCheckbox', [item, obj.title, taskgroup])
+        })
 
         checkboxItem.append(checkboxInput, checkboxLabel)
         checkboxUl.append(checkboxItem)
