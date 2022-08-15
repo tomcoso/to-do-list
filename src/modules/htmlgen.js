@@ -18,7 +18,7 @@ const page = (function () {
     _render(deckData, 'Overview')
   })
 
-  const attach = function (data) {
+  const attach = function (data, targetView) {
     deckData = data
     deck.replaceChildren()
     for (let i = 0; i < data.length; i++) {
@@ -26,11 +26,10 @@ const page = (function () {
       taskgroup.textContent = data[i].title
       taskgroup.addEventListener('click', (e) => {
         let target
-        if (e.path[0] === taskgroup) {
-          target = data[i].title
-        } else {
-          target = e.path[0].textContent
-        }
+        e.path[0] === taskgroup
+          ? (target = data[i].title)
+          : (target = e.path[0].textContent)
+
         _viewHandler(data[i], target)
       })
       const tasks = data[i].tasks
@@ -41,7 +40,30 @@ const page = (function () {
       }
       deck.append(taskgroup)
     }
-    _render(data, 'Overview')
+
+    if (targetView === 'taskgroup') {
+      _render(
+        data.find(
+          (tg) => tg.title === document.querySelector('.head-title').textContent
+        )
+      )
+    } else if (
+      targetView !== 'taskgroup' &&
+      targetView !== 'Overview' &&
+      targetView
+    ) {
+      _render(
+        data
+          .find(
+            (tg) =>
+              tg.title === document.querySelector('.head-title').textContent
+          )
+          .tasks.find((t) => t.title === targetView[0]),
+        targetView[1]
+      )
+    } else {
+      _render(data, 'Overview')
+    }
   }
 
   const _render = function (obj, taskgroupName) {
@@ -56,7 +78,7 @@ const page = (function () {
     headTitle.addEventListener('click', () => {
       if (taskgroupName) {
         _viewHandler(
-          deckData.filter((x) => x.title === taskgroupName)[0],
+          deckData.find((x) => x.title === taskgroupName)[0],
           taskgroupName
         )
       }
@@ -76,13 +98,13 @@ const page = (function () {
     const layoutBody = document.createElement('div')
     layoutBody.classList.add('main-body')
 
-    if (taskgroupName) {
+    if (taskgroupName && taskgroupName !== 'taskgroup') {
       if (taskgroupName === 'Overview') {
         _renderIncoming(obj, layoutBody)
       } else {
         _renderTask(obj, layoutBody)
       }
-    } else {
+    } else if (!taskgroupName || taskgroupName === 'taskgroup') {
       _renderTaskgroup(obj, layoutBody)
     }
 
@@ -140,6 +162,14 @@ const page = (function () {
     const bodyCompleteBtn = document.createElement('button')
     bodyCompleteBtn.setAttribute('type', 'button')
     bodyCompleteBtn.textContent = 'Complete'
+    bodyCompleteBtn.addEventListener('click', () => {
+      const taskgroup = document.querySelector('.head-title').textContent
+      observer.publish('completeTask', [obj.title, taskgroup, 'task'])
+    })
+    if (obj.completed) {
+      layoutBody.classList.add('complete')
+      bodyCompleteBtn.textContent = 'Uncomplete'
+    }
 
     bodyHead.append(
       titleWrap,
@@ -228,7 +258,6 @@ const page = (function () {
     )
 
     tasksHeader.append(tasksHeaderTitle)
-
     if (obj.tasks.length === 0) {
       const oopsMessage = document.createElement('p')
       oopsMessage.innerHTML =
@@ -270,6 +299,17 @@ const page = (function () {
       const tasksCompleteBtn = document.createElement('button')
       tasksCompleteBtn.setAttribute('type', 'button')
       tasksCompleteBtn.textContent = 'Complete'
+      if (obj.tasks[task].completed) {
+        tasksCompleteBtn.textContent = 'Uncomplete'
+        newTask.classList.add('completed')
+      }
+      tasksCompleteBtn.addEventListener('click', () => {
+        observer.publish('completeTask', [
+          obj.tasks[task].title,
+          obj.title,
+          'taskgroup',
+        ])
+      })
 
       const viewBtn = document.createElement('button')
       viewBtn.setAttribute('type', 'button')
@@ -308,6 +348,17 @@ const page = (function () {
       const checkboxInput = document.createElement('input')
       checkboxInput.setAttribute('type', 'checkbox')
       checkboxInput.setAttribute('id', id)
+      if (
+        deckData
+          .find((tg) => tg.title === tgTitle)
+          .tasks.find((t) => t.title === taskTitle).completed
+      ) {
+        checkboxInput.setAttribute('checked', '')
+        newItem.classList.add('completed')
+      }
+      checkboxInput.addEventListener('change', () => {
+        observer.publish('completeTask', [taskTitle, tgTitle, 'Overview'])
+      })
 
       checkboxItem.append(checkboxInput, checkboxLabel)
 

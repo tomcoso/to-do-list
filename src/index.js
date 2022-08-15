@@ -13,9 +13,9 @@ import observer from './modules/observer.js'
 
   const deckObj = app.unparseData(deck)
 
-  const attachAndSave = function () {
+  const attachAndSave = function (targetOpt) {
     storage.saveData(deck)
-    page.attach(deck)
+    targetOpt ? page.attach(deck, targetOpt) : page.attach(deck)
   }
 
   const createObjectFromDOM = function (data) {
@@ -52,13 +52,34 @@ import observer from './modules/observer.js'
       }
     }
     deck = deckObj.map((x) => app.parseData(x))
-    console.log(deck)
     attachAndSave()
+  }
+
+  const completeTask = function (data) {
+    const task = deckObj
+      .find((tg) => tg.info.read('title') === data[1])
+      .find(data[0])
+    task.info.read('completed')
+      ? task.info.update('completed', false)
+      : task.info.update('completed', true)
+    deck = deckObj.map((x) => app.parseData(x))
+    if (data[2] === 'task') {
+      attachAndSave([data[0], data[1]])
+    } else {
+      attachAndSave(data[2])
+    }
+    console.log(
+      deck
+        .find((tg) => tg.title === data[1])
+        .tasks.find((t) => t.title === data[0])
+    )
   }
 
   observer.subscribe('sentNewObjectData', createObjectFromDOM)
 
   observer.subscribe('sentDelObjectData', deleteObject)
+
+  observer.subscribe('completeTask', completeTask)
 
   attachAndSave()
 })()

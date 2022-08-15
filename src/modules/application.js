@@ -21,10 +21,8 @@ const app = (function () {
     }
 
     const update = function (prop, value) {
-      if (value) {
+      if (value || prop === 'completed') {
         data[prop] = value
-      } else if (data[prop] === 'completed') {
-        value ? (data[prop] = true) : (data[prop] = false)
       } else {
         throw new Error('Value cannot be falsy')
       }
