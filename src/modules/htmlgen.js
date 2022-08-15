@@ -325,6 +325,12 @@ const page = (function () {
 
       const itemTaskgroup = document.createElement('span')
       itemTaskgroup.textContent = tgTitle
+      itemTaskgroup.addEventListener('click', () => {
+        _viewHandler(
+          deckData.find((x) => x.title === tgTitle),
+          tgTitle
+        )
+      })
 
       newItem.append(itemTitle, viewSpan, itemTaskgroup)
 
