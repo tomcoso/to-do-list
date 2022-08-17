@@ -41,6 +41,24 @@
     height: 100vh;
 }
 
+button {
+    font-family: 'Inconsolata';
+    white-space: nowrap;
+    cursor: grab;
+    border-radius: 10px;
+    border: 2px solid var(--black);
+    background-color: var(--secondary);
+    transition-duration: 200ms;
+}
+button:is(:hover, :focus) {
+    filter: saturate(180%);
+    transition-duration: 100ms;
+}
+button:active {
+    background-color: var(--accent);
+    transition-duration: 100ms;
+}
+
 #sidebar {
     border-right: 2px solid var(--black);
     grid-row: 2 / 3;
@@ -118,19 +136,109 @@ header > h1 {
 #new-taskgroup {
     padding: 3% 10% 3.5% 10%;
     font-size: var(--font-600);
-    font-family: 'Inconsolata';
-    font-weight: 500;
-    white-space: nowrap;
-    border-radius: 10px;
+}
+
+#main-container {
+    display: grid;
+    grid: 8% 1fr / 1fr;
+    gap: 2%;
+    height: 100%;
+}
+#main-container .main-head {
+    height: 100%;
+    padding: 0% 6%;
+    display: flex;
+    align-items: center;
+    background-color: var(--white);
+    justify-content: space-between;
+}
+#main-container .main-head .head-title {
+    font-size: var(--font-700);
+    font-weight: bold;
+}
+#main-container .main-head > button {
+    padding: .5% 1.5%;
+    font-size: var(--font-500);
+}
+#main-container .main-body {
+    padding: 0% 5%;
+    display: flex;
+    flex-direction: column;
+    gap: 5%;
+}
+.main-body .time-panel {
     border: 2px solid var(--black);
-    background-color: var(--secondary);
-    transition-duration: 200ms;
+    border-radius: 5px;
+    padding: 0% 2% 2% 2%;
+    width: 100%;
+    height: min-content;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: var(--white);
 }
-#new-taskgroup:is(:hover, :focus) {
-    filter: saturate(180%);
-    transition-duration: 100ms;
+.main-body .time-panel .time-title {
+    font-size: var(--font-600);
+    padding: 1% 0%;
+    border-bottom: 2px solid var(--secondary);
 }
-#new-taskgroup:active {
+.main-body .time-panel .time-panel-tasks ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.time-panel-tasks ul > li {
+    display: grid;
+    gap: 3%;
+    grid: 1fr / 1fr min-content min-content;
+    place-items: start;
+
+    white-space: nowrap;
+    padding: 1% 0%;
+    border-bottom: 1px solid var(--secondary);
+}
+.time-panel-tasks ul > li.completed {
+    border-bottom: 1px solid var(--accent);
+    box-shadow: inset 0 -5px 10px -8px var(--accent);
+}
+.time-panel-tasks ul > li > span:not(:first-child) {
+    text-align: right;
+    filter: opacity(60%);
+    cursor: grab;
+}
+
+.time-panel-tasks ul > li > span:not(:first-child):is(:hover, :focus) {
+    color: var(--accent);
+}
+.time-panel-tasks ul > li > span:first-child > div {
+    display: flex;
+    gap: 30%;
+    font-size: var(--font-500);
+}
+.time-panel-tasks ul > li > span:first-child > div > input {
+    appearance: none;
+    position: relative;
+}
+.time-panel-tasks ul > li > span:first-child > div > input::before {
+    content: '';
+    height: var(--font-400);
+    width: var(--font-400);
+    border: 1px solid var(--black);
+    border-radius: 3px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    box-shadow: 1px 1px 0px var(--black);
+    font-size: var(--font-600);
+    line-height: 70%;
+    text-align: center;
+}
+.time-panel-tasks ul > li > span:first-child > div:hover > input::before {
+    box-shadow: 1px 1px 2px var(--accent);
+    transition-duration: 300ms;
+}
+.time-panel-tasks ul > li > span:first-child > div > input:checked::before {
     background-color: var(--accent);
-    transition-duration: 100ms;
+    content: '♠';
 }

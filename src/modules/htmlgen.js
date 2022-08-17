@@ -81,9 +81,9 @@ const page = (function () {
     headTitle.classList.add('head-title')
     headTitle.textContent = taskgroupName || obj.title
     headTitle.addEventListener('click', () => {
-      if (taskgroupName) {
+      if (taskgroupName && taskgroupName !== 'Overview') {
         _viewHandler(
-          deckData.find((x) => x.title === taskgroupName)[0],
+          deckData.find((x) => x.title === taskgroupName),
           taskgroupName
         )
       }
@@ -426,6 +426,7 @@ const page = (function () {
 
       const title = document.createElement('div')
       title.textContent = tTitle
+      title.classList.add('time-title')
 
       const tasks = document.createElement('div')
       tasks.classList.add('time-panel-tasks')
