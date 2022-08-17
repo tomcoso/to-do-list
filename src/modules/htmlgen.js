@@ -16,6 +16,9 @@ const page = (function () {
 
   incomingTab.addEventListener('click', (e) => {
     _render(deckData, 'Overview')
+    deck.childNodes.forEach((ul) => {
+      ul.childNodes.forEach((x) => x.classList.remove('current-view'))
+    })
   })
 
   const attach = function (data, targetView) {
@@ -23,7 +26,9 @@ const page = (function () {
     deck.replaceChildren()
     for (let i = 0; i < data.length; i++) {
       const taskgroup = document.createElement('ul')
-      taskgroup.textContent = data[i].title
+      const tgTitle = document.createElement('div')
+      tgTitle.textContent = data[i].title
+      taskgroup.append(tgTitle)
       taskgroup.addEventListener('click', (e) => {
         let target
         e.path[0] === taskgroup
@@ -124,6 +129,15 @@ const page = (function () {
   }
 
   const _renderTask = function (obj, layoutBody) {
+    deck.childNodes.forEach((ul) => {
+      ul.childNodes.forEach((x) =>
+        x.textContent === obj.title
+          ? x.classList.add('current-view')
+          : x.classList.remove('current-view')
+      )
+    })
+    incomingTab.classList.remove('current-view')
+
     const bodyHead = document.createElement('div')
     bodyHead.classList.add('body-head')
 
@@ -219,6 +233,15 @@ const page = (function () {
   }
 
   const _renderTaskgroup = function (obj, layoutBody) {
+    deck.childNodes.forEach((ul) => {
+      ul.childNodes.forEach((x) =>
+        x.textContent === obj.title
+          ? x.classList.add('current-view')
+          : x.classList.remove('current-view')
+      )
+    })
+    incomingTab.classList.remove('current-view')
+
     const bodyHead = document.createElement('div')
     bodyHead.classList.add('body-head')
 
@@ -343,6 +366,7 @@ const page = (function () {
 
   const _renderIncoming = function (obj, layoutBody) {
     const currentDate = new Date()
+    incomingTab.classList.add('current-view')
 
     const _makeLi = function (taskTitle, tgTitle) {
       const newItem = document.createElement('li')

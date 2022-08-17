@@ -1,8 +1,37 @@
-/* * {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-} */
+    color: var(--black);
+}
+
+@font-face {
+    font-family: 'Inconsolata';
+    src: url(./assets/Inconsolata-VariableFont_wdth\,wght.ttf) format('truetype');
+}
+
+:root {
+    --white: #ecfdf5;
+    --secondary: #BBF7D0;
+    --accent: #F59E0B;
+    --black: #1C1917;
+
+    font-family: 'Inconsolata';
+}
+
+/* FULL DESKTOP */
+@media (min-width: 1000px) {
+    :root {
+        --font-400: 1rem;
+        --font-600: 1.3rem;
+        --font-700: 1.5rem;
+        --font-900: 2rem;
+    }
+}
+
+.hidden {
+    display: none;
+}
 
 #page-wrapper {
     display: grid;
@@ -12,18 +41,68 @@
 }
 
 header {
-    border: 1px solid #000;
+    border-bottom: 2px solid #000;
     grid-column: 1 / 3;
 
     display: flex;
+    background-color: var(--secondary);
+}
+header > h1 {
+    user-select: none;
 }
 
 #sidebar {
-    border: 1px solid #000;
+    border-right: 2px solid var(--black);
     grid-row: 2 / 3;
     grid-column: 1;
+    padding: 0px 6%;
+    user-select: none;
 }
-
-.hidden {
-    display: none;
+.incoming-wrap {
+    margin: 20px 0px;
+    width: 100%;
+}
+.incoming-wrap > div {
+    padding: 5% 10%;
+    text-align: left;
+    font-size: var(--font-600);
+    font-weight: bold;
+    cursor: grab;
+}
+:is(.incoming-wrap > div,
+#deck ul > li,
+#deck ul > div):hover {
+    filter: saturate(0%);
+    background-color: var(--secondary);
+    border-radius: 5px;
+    transition-duration: 300ms;
+}
+#deck {
+    width: 100%;
+}
+#deck ul {
+    list-style-type: none;
+    margin-bottom: 20%;
+    width: 100%;
+}
+#deck div {
+    padding: 2% 10%;
+    cursor: grab;
+    font-size: var(--font-600);
+    font-weight: bold;
+}
+#deck ul li {
+    width: 100%;
+    font-size: var(--font-400);
+    font-weight: normal;
+    padding: 2% 5% 2% 20%;
+}
+#sidebar .current-view {
+    background-color: var(--secondary);
+    font-weight: bold;
+    border-radius: 5px;
+}
+#sidebar .current-view:hover {
+    cursor: default;
+    filter: saturate(100%);
 }
