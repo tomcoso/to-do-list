@@ -23,9 +23,10 @@
 @media (min-width: 1000px) {
     :root {
         --font-400: 1rem;
+        --font-500: 1.1rem;
         --font-600: 1.3rem;
         --font-700: 1.5rem;
-        --font-900: 2rem;
+        --font-900: 2.8rem;
     }
 }
 
@@ -40,23 +41,13 @@
     height: 100vh;
 }
 
-header {
-    border-bottom: 2px solid #000;
-    grid-column: 1 / 3;
-
-    display: flex;
-    background-color: var(--secondary);
-}
-header > h1 {
-    user-select: none;
-}
-
 #sidebar {
     border-right: 2px solid var(--black);
     grid-row: 2 / 3;
     grid-column: 1;
     padding: 0px 6%;
     user-select: none;
+    background-color: var(--white);
 }
 .incoming-wrap {
     margin: 20px 0px;
@@ -71,7 +62,7 @@ header > h1 {
 }
 :is(.incoming-wrap > div,
 #deck ul > li,
-#deck ul > div):hover {
+#deck ul > div):is(:hover, :focus) {
     filter: saturate(0%);
     background-color: var(--secondary);
     border-radius: 5px;
@@ -82,7 +73,7 @@ header > h1 {
 }
 #deck ul {
     list-style-type: none;
-    margin-bottom: 20%;
+    margin-bottom: 10%;
     width: 100%;
 }
 #deck div {
@@ -102,7 +93,44 @@ header > h1 {
     font-weight: bold;
     border-radius: 5px;
 }
-#sidebar .current-view:hover {
+#sidebar .current-view:is(:hover, :focus) {
     cursor: default;
     filter: saturate(100%);
+}
+
+header {
+    border-bottom: 2px solid #000;
+    grid-column: 1 / 3;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10%;
+    padding: 0% 1%;
+
+    background-color: var(--secondary);
+}
+header > h1 {
+    user-select: none;
+    font-size: var(--font-900);
+    font-family:'Inconsolata';
+}
+#new-taskgroup {
+    padding: 3% 10% 3.5% 10%;
+    font-size: var(--font-600);
+    font-family: 'Inconsolata';
+    font-weight: 500;
+    white-space: nowrap;
+    border-radius: 10px;
+    border: 2px solid var(--black);
+    background-color: var(--secondary);
+    transition-duration: 200ms;
+}
+#new-taskgroup:is(:hover, :focus) {
+    filter: saturate(180%);
+    transition-duration: 100ms;
+}
+#new-taskgroup:active {
+    background-color: var(--accent);
+    transition-duration: 100ms;
 }
