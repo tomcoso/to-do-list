@@ -41,6 +41,9 @@ const page = (function () {
       for (const task in tasks) {
         const taskLi = document.createElement('li')
         taskLi.textContent = tasks[task].title
+        if (tasks[task].completed) {
+          taskLi.classList.add('completed')
+        }
         taskgroup.append(taskLi)
       }
       deck.append(taskgroup)
@@ -147,21 +150,25 @@ const page = (function () {
 
     const bodyCDate = document.createElement('p')
     bodyCDate.textContent = 'Created the ' + obj.creationDate
-    bodyTitle.classList.add('body-cdate')
+    bodyCDate.classList.add('body-cdate')
 
     const titleWrap = document.createElement('div')
     titleWrap.classList.add('body-title-wrap')
     titleWrap.append(bodyTitle, bodyCDate)
 
     const bodyPriority = document.createElement('p')
-    bodyPriority.textContent = obj.priority
+    bodyPriority.textContent = `${obj.priority} priority`
     bodyPriority.classList.add('body-priority')
+    bodyPriority.classList.add(obj.priority.toLowerCase())
 
     const bodyDDate = document.createElement('p')
 
     bodyDDate.textContent =
       'Due: ' +
       (obj.dueDate ? format(new Date(obj.dueDate), 'dd/MM/yy') : 'Whenever')
+
+    const btnsDiv = document.createElement('div')
+    btnsDiv.classList.add('buttons')
 
     const bodyDelBtn = document.createElement('button')
     bodyDelBtn.setAttribute('type', 'button')
@@ -185,19 +192,15 @@ const page = (function () {
       bodyCompleteBtn.textContent = 'Uncomplete'
     }
 
-    bodyHead.append(
-      titleWrap,
-      bodyPriority,
-      bodyDDate,
-      bodyDelBtn,
-      bodyCompleteBtn
-    )
+    btnsDiv.append(bodyDelBtn, bodyCompleteBtn)
 
     const bodyDesc = document.createElement('div')
     bodyDesc.classList.add('body-description')
     bodyDesc.textContent = obj.description
 
-    layoutBody.append(bodyHead, bodyDesc)
+    bodyHead.append(titleWrap, bodyPriority, bodyDDate, btnsDiv, bodyDesc)
+
+    layoutBody.append(bodyHead)
 
     if (obj.checkbox) {
       const checkboxWrap = document.createElement('div')

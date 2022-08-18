@@ -111,6 +111,10 @@ button:active {
     font-weight: normal;
     padding: 2% 5% 2% 20%;
 }
+#deck ul li.completed {
+    text-decoration: line-through;
+    filter: opacity(.7);
+}
 #sidebar .current-view {
     background-color: var(--secondary);
     font-weight: bold;
@@ -221,11 +225,11 @@ header > h1 {
     gap: 2rem;
     font-size: var(--font-500);
 }
-.time-panel-tasks ul > li > span:first-child > div > input {
+input[type="checkbox"] {
     appearance: none;
     position: relative;
 }
-.time-panel-tasks ul > li > span:first-child > div > input::before {
+input[type="checkbox"]::before {
     content: '';
     height: var(--font-400);
     width: var(--font-400);
@@ -240,11 +244,11 @@ header > h1 {
     line-height: 70%;
     text-align: center;
 }
-.time-panel-tasks ul > li > span:first-child > div:hover > input::before {
+input[type="checkbox"]:hover::before{
     box-shadow: 1px 1px 2px var(--accent);
     transition-duration: 300ms;
 }
-.time-panel-tasks ul > li > span:first-child > div > input:checked::before {
+input[type="checkbox"]:checked::before {
     background-color: var(--accent);
     content: '♠';
 }
@@ -356,10 +360,7 @@ header > h1 {
     filter: opacity(.8);
     padding: 1% 0%;
 }
-.body-tasks {
-    padding: 2% 0;
-}
-.body-tasks .tasks-header p:last-of-type {
+.body-tasks .tasks-header p:nth-child(2) {
     font-size: var(--font-500);
     font-weight: normal;
 } 
@@ -388,6 +389,12 @@ header > h1 {
     place-items: center;
     gap: 1rem;
     white-space: nowrap;
+}
+.body-tasks .task.completed {
+    filter: opacity(.7);
+}
+.body-tasks .task.completed .task-title {
+    text-decoration: line-through;
 }
 .body-tasks .task.maximum {
     border-left: 3px solid var(--maximum);
@@ -433,4 +440,46 @@ header > h1 {
     padding: 3px 10px;
     font-size: var(--font-400);
     margin-left: 10px;
+}
+
+.body-head .buttons {
+    margin-bottom: 1%;
+}
+.body-head .buttons button {
+    padding: 2px 10px;
+    font-size: var(--font-400);
+    margin-right: 10px;
+}
+.checkbox-wrap > ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-left: 3px solid var(--secondary);
+    border-radius: 5px;
+    padding: 10px 10px;
+}
+.checkbox-wrap > ul > li {
+    font-size: var(--font-500);
+    display: flex;
+    gap: 30px;
+    user-select: none;
+    border-bottom: 1px solid white;
+}
+.checkbox-wrap > ul > li:hover {
+    border-bottom: 1px solid var(--secondary);
+}
+.checkbox-wrap > ul > li > label {
+    cursor: grab;
+}
+.checkbox-wrap > ul > li.completed {
+    text-decoration: line-through;
+    filter: opacity(.7);
+}
+.complete .body-head > p:last-of-type {
+    text-decoration: line-through;
+    filter: opacity(.7);
+}
+.complete .buttons button:last-of-type {
+    filter: opacity(.7);
 }
