@@ -2,9 +2,8 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: './src/index.js',
-  devtool: 'inline-source-map',
   devServer: {
     static: './dist',
   },
@@ -12,6 +11,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'To-do List',
       template: './src/template.html',
+      favicon: './src/assets/favicon-32x32.png',
     }),
   ],
   output: {

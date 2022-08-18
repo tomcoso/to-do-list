@@ -9,10 +9,6 @@ const object = (function () {
     const pageWrap = document.querySelector('#page-wrapper')
 
     const popupPanel = _newTag('div', { id: 'object-panel' })
-    popupPanel.setAttribute(
-      'style',
-      'position: absolute; background-color: white; padding: 1rem'
-    )
 
     const form = _newTag('form', { id: 'object-form' })
     // TITLE
@@ -23,6 +19,7 @@ const object = (function () {
       type: 'text',
       id: 'title',
       required: true,
+      placeholder: 'Interesting title...',
     })
     title.append(titleLabel, titleInput)
 
@@ -34,6 +31,9 @@ const object = (function () {
     const priorityValues = ['Maximum', 'High', 'Medium', 'Low']
     for (const i of priorityValues) {
       const option = _newTag('option', { innerText: i })
+      if (i === 'Medium') {
+        option.setAttribute('selected', '')
+      }
       priorityInput.append(option)
     }
     priority.append(priorityLabel, priorityInput)
@@ -85,6 +85,8 @@ const object = (function () {
   const _openNewTgPanel = function (popupPanel, form) {
     const panelInfo = _newTag('p', { innerText: 'Create Taskgroup' })
     popupPanel.insertAdjacentElement('afterbegin', panelInfo)
+    const btnsDiv = document.createElement('div')
+    btnsDiv.classList.add('buttons')
     const submit = _newTag('button', {
       type: 'submit',
       innerText: 'Create',
@@ -95,7 +97,8 @@ const object = (function () {
       innerText: 'Cancel',
       id: 'cancel-button',
     })
-    form.append(submit, cancel)
+    btnsDiv.append(submit, cancel)
+    form.append(btnsDiv)
   }
 
   const _openNewTaskPanel = function (popupPanel, form, taskgroup) {
@@ -123,6 +126,7 @@ const object = (function () {
     const newCheckInput = _newTag('input', {
       type: 'text',
       id: 'checkbox-name',
+      placeholder: 'Item name',
     })
     const newCheckAdd = _newTag('button', {
       type: 'button',
@@ -150,10 +154,12 @@ const object = (function () {
     checkOption.addEventListener('click', () => {
       checkboxField.classList.toggle('hidden')
     })
-    checkbox.append(checkOption, checkLabel, checkboxField)
+    checkbox.append(checkLabel, checkOption, checkboxField)
 
     form.append(checkbox)
 
+    const btnsDiv = document.createElement('div')
+    btnsDiv.classList.add('buttons')
     const submit = _newTag('button', {
       type: 'submit',
       innerText: 'Add',
@@ -164,7 +170,8 @@ const object = (function () {
       innerText: 'Cancel',
       id: 'cancel-button',
     })
-    form.append(submit, cancel)
+    btnsDiv.append(submit, cancel)
+    form.append(btnsDiv)
   }
 
   const _send = function (type) {
