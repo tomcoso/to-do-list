@@ -76,12 +76,19 @@ button:active {
     margin: 20px 0px;
     width: 100%;
 }
+.incoming-wrap > div::before{
+    content: url(./assets/calendar.svg);
+    position: absolute;
+    left: 10px;
+    top: 20%;
+}
 .incoming-wrap > div {
-    padding: 5% 10%;
+    padding: 5% 10% 5% 25%;
     text-align: left;
     font-size: var(--font-600);
     font-weight: bold;
     cursor: grab;
+    position: relative;
 }
 :is(.incoming-wrap > div,
 #deck ul > li,
@@ -100,10 +107,17 @@ button:active {
     width: 100%;
 }
 #deck div {
-    padding: 2% 10%;
+    padding: 2% 10% 2% 25%;
     cursor: grab;
     font-size: var(--font-600);
     font-weight: bold;
+    position: relative;
+}
+#deck > ul > div::before{
+    content: url(./assets/layers.svg);
+    position: absolute;
+    left: 10px;
+    top: 15%;
 }
 #deck ul li {
     width: 100%;
@@ -165,9 +179,13 @@ header > h1 {
     font-size: var(--font-700);
     font-weight: bold;
 }
+#main-container .main-head > button::before {
+    content: url(./assets/trash.svg);
+}
 #main-container .main-head > button {
-    padding: .5% 1.5%;
-    font-size: var(--font-500);
+    border: none;
+    background-color: var(--white);
+    scale: 1.2;
 }
 #main-container .main-body {
     padding: 0% 5%;
@@ -441,6 +459,19 @@ input[type="checkbox"]:checked::before {
     font-size: var(--font-400);
     margin-left: 10px;
 }
+.body-tasks .task .buttons > button:first-of-type::before {
+    content: url(./assets/trash.svg);
+    position: absolute;
+    scale: 1.2;
+    top: -12px;
+    left: 0px;
+}
+.body-tasks .task .buttons > button:first-of-type {
+    background-color: var(--secondary);
+    border: none;
+    position: relative;
+    margin-right: 10px;
+}
 
 .body-head .buttons {
     margin-bottom: 1%;
@@ -449,6 +480,19 @@ input[type="checkbox"]:checked::before {
     padding: 2px 10px;
     font-size: var(--font-400);
     margin-right: 10px;
+}
+.body-head .buttons button:first-of-type {
+    position: relative;
+    background-color: white;
+    border: none;
+    margin-right: 20px;
+}
+.body-head .buttons button:first-of-type::before {
+    content: url(./assets/trash.svg);
+    position: absolute;
+    scale: 1.2;
+    top: -14px;
+    left: 0px;
 }
 .checkbox-wrap > ul {
     list-style-type: none;

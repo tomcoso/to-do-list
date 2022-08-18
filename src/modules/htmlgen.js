@@ -94,7 +94,7 @@ const page = (function () {
     layoutHead.append(headTitle)
     if (!taskgroupName) {
       const delBtn = document.createElement('button')
-      delBtn.textContent = 'Delete'
+      delBtn.textContent = ''
       delBtn.setAttribute('type', 'button')
       delBtn.setAttribute('id', 'del-taskgroup')
       delBtn.addEventListener('click', () =>
@@ -172,7 +172,7 @@ const page = (function () {
 
     const bodyDelBtn = document.createElement('button')
     bodyDelBtn.setAttribute('type', 'button')
-    bodyDelBtn.textContent = 'Delete'
+    bodyDelBtn.textContent = ''
     bodyDelBtn.addEventListener('click', () =>
       observer.publish('deleteObject', [
         obj.title,
@@ -330,7 +330,7 @@ const page = (function () {
 
       const tasksDelBtn = document.createElement('button')
       tasksDelBtn.setAttribute('type', 'button')
-      tasksDelBtn.textContent = 'Delete'
+      tasksDelBtn.textContent = ''
       tasksDelBtn.addEventListener('click', () =>
         observer.publish('deleteObject', [obj.tasks[task].title, obj.title])
       )
