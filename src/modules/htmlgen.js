@@ -251,15 +251,16 @@ const page = (function () {
 
     const bodyCDate = document.createElement('p')
     bodyCDate.textContent = 'Created the ' + obj.creationDate
-    bodyTitle.classList.add('body-cdate')
+    bodyCDate.classList.add('body-cdate')
 
     const titleWrap = document.createElement('div')
     titleWrap.classList.add('body-title-wrap')
     titleWrap.append(bodyTitle, bodyCDate)
 
     const bodyPriority = document.createElement('p')
-    bodyPriority.textContent = obj.priority
+    bodyPriority.textContent = `${obj.priority} priority`
     bodyPriority.classList.add('body-priority')
+    bodyPriority.classList.add(obj.priority.toLowerCase())
 
     const bodyDDate = document.createElement('p')
     bodyDDate.textContent =
@@ -303,6 +304,7 @@ const page = (function () {
     for (const task in obj.tasks) {
       const newTask = document.createElement('div')
       newTask.classList.add('task')
+      newTask.classList.add(obj.tasks[task].priority.toLowerCase())
 
       const taskTitle = document.createElement('div')
       taskTitle.textContent = obj.tasks[task].title
@@ -318,7 +320,10 @@ const page = (function () {
 
       const taskPriority = document.createElement('p')
       taskPriority.classList.add('task-priority')
-      taskPriority.textContent = obj.tasks[task].priority
+      taskPriority.textContent = `${obj.tasks[task].priority} priority`
+
+      const btnsDiv = document.createElement('div')
+      btnsDiv.classList.add('buttons')
 
       const tasksDelBtn = document.createElement('button')
       tasksDelBtn.setAttribute('type', 'button')
@@ -349,14 +354,9 @@ const page = (function () {
         _render(obj.tasks[task], obj.title)
       )
 
-      newTask.append(
-        taskTitle,
-        taskDDate,
-        taskPriority,
-        tasksDelBtn,
-        tasksCompleteBtn,
-        viewBtn
-      )
+      btnsDiv.append(tasksDelBtn, tasksCompleteBtn, viewBtn)
+
+      newTask.append(taskTitle, taskDDate, taskPriority, btnsDiv)
 
       tasksList.append(newTask)
     }
@@ -369,6 +369,9 @@ const page = (function () {
     incomingTab.classList.add('current-view')
 
     const _makeLi = function (taskTitle, tgTitle) {
+      const taskgroup = deckData.find((x) => x.title === tgTitle)
+      const taskObj = taskgroup.tasks.find((x) => x.title === taskTitle)
+
       const newItem = document.createElement('li')
       const checkboxItem = document.createElement('div')
 
@@ -380,11 +383,7 @@ const page = (function () {
       const checkboxInput = document.createElement('input')
       checkboxInput.setAttribute('type', 'checkbox')
       checkboxInput.setAttribute('id', id)
-      if (
-        deckData
-          .find((tg) => tg.title === tgTitle)
-          .tasks.find((t) => t.title === taskTitle).completed
-      ) {
+      if (taskObj.completed) {
         checkboxInput.setAttribute('checked', '')
         newItem.classList.add('completed')
       }
@@ -400,20 +399,16 @@ const page = (function () {
       const viewSpan = document.createElement('span')
       viewSpan.textContent = 'view'
       viewSpan.addEventListener('click', () => {
-        for (let i = 0; i < deckData.length; i++) {
-          if (deckData[i].title === tgTitle)
-            _viewHandler(deckData[i], taskTitle)
-        }
+        _viewHandler(taskgroup, taskTitle)
       })
 
       const itemTaskgroup = document.createElement('span')
       itemTaskgroup.textContent = tgTitle
       itemTaskgroup.addEventListener('click', () => {
-        _viewHandler(
-          deckData.find((x) => x.title === tgTitle),
-          tgTitle
-        )
+        _viewHandler(taskgroup, tgTitle)
       })
+
+      newItem.classList.add(taskObj.priority.toLowerCase())
 
       newItem.append(itemTitle, viewSpan, itemTaskgroup)
 
@@ -427,6 +422,14 @@ const page = (function () {
       const title = document.createElement('div')
       title.textContent = tTitle
       title.classList.add('time-title')
+      if (time === 'incoming') {
+        title.addEventListener('click', () => {
+          _viewHandler(
+            deckData.find((x) => x.title === tTitle),
+            tTitle
+          )
+        })
+      }
 
       const tasks = document.createElement('div')
       tasks.classList.add('time-panel-tasks')
@@ -530,7 +533,7 @@ const page = (function () {
       const noIncomingPanel = document.createElement('div')
       noIncomingPanel.classList.add('no-incoming-panel')
       const NIPMessage = document.createElement('p')
-      NIPMessage.textContent = 'There is no tasks due for this month! :)'
+      NIPMessage.textContent = 'There are no tasks due for this month! :)'
       const NIPTitle = document.createElement('p')
       NIPTitle.textContent = 'All Taskgroups'
       noIncomingPanel.append(NIPMessage, NIPTitle)
@@ -540,6 +543,9 @@ const page = (function () {
         for (const t in obj[tg].tasks) {
           const newTask = document.createElement('li')
           newTask.textContent = obj[tg].tasks[t].title
+          newTask.addEventListener('click', () =>
+            _render(obj[tg].tasks[t], obj[t].title)
+          )
           taskgroup.list.append(newTask)
           taskgroup.panel.append(taskgroup.list)
         }
