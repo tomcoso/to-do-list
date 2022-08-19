@@ -4,6 +4,7 @@ import storage from './modules/storage'
 import app from './modules/application.js'
 import page from './modules/htmlgen.js'
 import observer from './modules/observer.js'
+import { add, format } from 'date-fns'
 ;(function () {
   let deck = []
 
@@ -18,9 +19,21 @@ import observer from './modules/observer.js'
     )
     example.createTask(
       'Super Secret Task',
-      'Maximum',
+      'High',
       "Don't tell anyone. Not even yourself. In fact, what are you talking about? Shut up.",
-      '01/01/2025'
+      format(new Date(), 'MM/dd/yyyy')
+    )
+    example.createTask(
+      'Tomar mate',
+      'Maximum',
+      'Amargos. Siempre',
+      format(add(new Date(), { days: 2 }), 'MM/dd/yyyy')
+    )
+    example.createTask(
+      'Go to the dentist',
+      'Medium',
+      'Regular check with Dr. Who',
+      format(add(new Date(), { days: 3 }), 'MM/dd/yyyy')
     )
     deck.push(app.parseData(example))
   }
