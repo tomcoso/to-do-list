@@ -7,10 +7,13 @@ import {
   isFuture,
   isPast,
 } from 'date-fns'
+import calendar from '../assets/calendar.svg'
+import layers from '../assets/layers.svg'
 const page = (function () {
   const main = document.querySelector('#main-container')
   const deck = document.querySelector('#deck')
   const incomingTab = document.querySelector('.incoming-wrap div')
+  const sidebar = document.querySelector('#sidebar')
   let deckData
   const newTg = document.querySelector('#new-taskgroup')
 
@@ -72,6 +75,13 @@ const page = (function () {
     } else {
       _render(data, 'Overview')
     }
+    window.addEventListener('resize', () => {
+      if (window.screen.availWidth < 1000) {
+        sidebar.classList.add('hidden')
+      } else {
+        sidebar.classList.remove('hidden')
+      }
+    })
   }
 
   const _render = function (obj, taskgroupName) {
@@ -91,7 +101,30 @@ const page = (function () {
         )
       }
     })
-    layoutHead.append(headTitle)
+    const headTitleWrap = document.createElement('div')
+    const menuBtn = document.createElement('img')
+    menuBtn.setAttribute('src', taskgroupName ? calendar : layers)
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('hidden')
+      menuBtn.classList.toggle('hidden')
+    })
+    menuBtn.classList.add('hidden')
+    if (window.screen.availWidth < 1000) {
+      sidebar.classList.add('hidden')
+      menuBtn.classList.remove('hidden')
+    }
+
+    window.addEventListener('resize', () => {
+      if (window.screen.availWidth < 1000) {
+        menuBtn.classList.remove('hidden')
+      } else {
+        menuBtn.classList.add('hidden')
+      }
+    })
+
+    headTitleWrap.append(menuBtn, headTitle)
+    layoutHead.append(headTitleWrap)
+
     if (!taskgroupName) {
       const delBtn = document.createElement('button')
       delBtn.textContent = ''

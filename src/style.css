@@ -39,6 +39,9 @@
         --font-700: 1.5rem;
         --font-900: 2.8rem;
 
+        --page-grid: 8vh 1fr / 20vw 1fr;
+        --sidebar-position: static;
+
         --popup-height: min-content;
         --popup-width: 600px;
         --form-grid: 1fr / 130px 1fr;
@@ -56,6 +59,9 @@
         --font-700: 1.5rem;
         --font-900: 2.8rem;
 
+        --page-grid: 8vh 1fr / min-content 1fr;
+        --sidebar-position: absolute;
+
         --popup-height: min-content;
         --popup-width: min-content;
         --form-grid: min-content 1fr / min-content;
@@ -72,9 +78,10 @@
 
 #page-wrapper {
     display: grid;
-    grid: 8vh 1fr / 20vw 1fr;
+    grid: var(--page-grid);
     width: 100vw;
     height: 100vh;
+    position: relative;
 }
 
 button {
@@ -99,9 +106,13 @@ button:active {
     border-right: 2px solid var(--black);
     grid-row: 2 / 3;
     grid-column: 1;
-    padding: 0px 6%;
+    padding: 0px 1rem;
     user-select: none;
     background-color: var(--white);
+    width: 200px;
+    height: 100%;
+    z-index: 2;
+    position: var(--sidebar-position);
 }
 .incoming-wrap {
     margin: 20px 0px;
@@ -192,6 +203,9 @@ header > h1 {
     font-size: var(--font-600);
 }
 
+main {
+    grid-column: 2/3;
+}
 #main-container {
     display: grid;
     grid: 8% 1fr / 1fr;
@@ -206,11 +220,20 @@ header > h1 {
 }
 #main-container .main-head {
     height: 100%;
-    padding: 0% 6%;
+    padding: 0% 6% 0% 1.5%;
     display: flex;
     align-items: center;
     background-color: var(--white);
     justify-content: space-between;
+}
+#main-container .main-head > div {
+    display: flex;
+    gap: 1rem;
+}
+#main-container .main-head > div > img {
+    scale: 1.1;
+    padding-right: 10px;
+    border-right: 2px solid var(--secondary);
 }
 #main-container .main-head .head-title {
     font-size: var(--font-700);
