@@ -42,6 +42,27 @@
         --popup-height: min-content;
         --popup-width: 600px;
         --form-grid: 1fr / 130px 1fr;
+
+        --task-grid: 1fr / repeat(3, min-content) 1fr;
+        --task-btn-col: 4/5;
+        --task-btn-place: center end;
+    }
+}
+@media (max-width: 1000px) {
+    :root {
+        --font-400: 1rem;
+        --font-500: 1.1rem;
+        --font-600: 1.3rem;
+        --font-700: 1.5rem;
+        --font-900: 2.8rem;
+
+        --popup-height: min-content;
+        --popup-width: min-content;
+        --form-grid: min-content 1fr / min-content;
+
+        --task-grid: repeat(2, min-content) / repeat(3, min-content);
+        --task-btn-col: 1/4;
+        --task-btn-place: center start;
     }
 }
 
@@ -176,6 +197,12 @@ header > h1 {
     grid: 8% 1fr / 1fr;
     gap: 2%;
     height: 100%;
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none; 
+}
+#main-container::-webkit-scrollbar {
+    display: none;
 }
 #main-container .main-head {
     height: 100%;
@@ -413,7 +440,7 @@ input[type="checkbox"]:checked::before {
     background-color: var(--secondary);
     padding: .5% 2%;
     display: grid;
-    grid: 1fr / repeat(3, min-content) 1fr;
+    grid: var(--task-grid);
     place-items: center;
     gap: 1rem;
     white-space: nowrap;
@@ -450,6 +477,7 @@ input[type="checkbox"]:checked::before {
 }
 .body-tasks .task .task-title {
     font-size: var(--font-500);
+    place-self: center start;
     font-weight: bold;
     grid-column: 1/2;
 }
@@ -462,7 +490,8 @@ input[type="checkbox"]:checked::before {
     filter: opacity(.8);
 }
 .body-tasks .task .buttons {
-    place-self: end;
+    place-self: var(--task-btn-place);
+    grid-column: var(--task-btn-col);
 }
 .body-tasks .task .buttons > button{
     padding: 3px 10px;
@@ -568,7 +597,6 @@ input[type="checkbox"]:checked::before {
 #object-panel form > div {
     display: grid;
     grid: var(--form-grid);
-    /* grid: min-content 1fr / min-content; */
     gap: 10px;
     border-bottom: 2px solid var(--secondary);
     padding: 5px 0;
