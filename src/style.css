@@ -368,7 +368,7 @@ input[type="checkbox"]:hover::before{
 }
 input[type="checkbox"]:checked::before {
     background-color: var(--accent);
-    content: '♠';
+    content: '✔';
 }
 .no-incoming-panel {
     border: 2px solid var(--black);

@@ -183,7 +183,7 @@ const object = (function () {
     data.dueDate = document.querySelector('#object-form #due-date').value
     data.type = type
 
-    if (document.querySelector('#object-form #if-checkbox.hidden' === null)) {
+    if (document.querySelector('#checkbox-fieldset > fieldset > div')) {
       const checkboxList = document.querySelectorAll(
         '#checkbox-fieldset > fieldset > div > label'
       )
