@@ -58,7 +58,7 @@
 }
 @media (max-width: 1000px) {
     :root {
-        --font-900: 2.4rem;
+        --font-900: 2rem;
 
         --page-grid: 8vh 1fr / min-content 1fr;
         --sidebar-position: absolute;
@@ -164,7 +164,7 @@ button:active {
 #deck div {
     padding: 2% 10% 2% 25%;
     cursor: grab;
-    font-size: var(--font-500);
+    font-size: var(--font-600);
     font-weight: bold;
     position: relative;
 }
@@ -179,7 +179,7 @@ button:active {
 #deck ul li {
     width: 100%;
     margin-top: 10px;
-    font-size: var(--font-400);
+    font-size: var(--font-600);
     font-weight: normal;
     padding: 2% 5% 2% 20%;
 }
@@ -204,7 +204,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10%;
+    gap: 10px;
     padding: 0% 1rem;
     width: 100%;
 
