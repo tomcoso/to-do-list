@@ -78,8 +78,10 @@ const page = (function () {
     window.addEventListener('resize', () => {
       if (window.screen.availWidth < 1000) {
         sidebar.classList.add('hidden')
+        newTg.textContent = ''
       } else {
         sidebar.classList.remove('hidden')
+        newTg.textContent = 'New Taskgroup'
       }
     })
   }
@@ -595,6 +597,10 @@ const page = (function () {
       }
       layoutBody.append(noIncomingPanel)
     }
+  }
+
+  if (window.screen.availWidth < 1000) {
+    newTg.textContent = ''
   }
 
   newTg.addEventListener('click', () => {

@@ -26,6 +26,11 @@
     --high: #ea580c;
     --medium: #fde047;
     --low: #65a30d;
+    
+    --font-400: 1rem;
+    --font-500: 1.1rem;
+    --font-600: 1.3rem;
+    --font-700: 1.5rem;
 
     font-family: 'Inconsolata';
 }
@@ -33,10 +38,6 @@
 /* FULL DESKTOP */
 @media (min-width: 1000px) {
     :root {
-        --font-400: 1rem;
-        --font-500: 1.1rem;
-        --font-600: 1.3rem;
-        --font-700: 1.5rem;
         --font-900: 2.8rem;
 
         --page-grid: 8vh 1fr / 20vw 1fr;
@@ -49,15 +50,15 @@
         --task-grid: 1fr / repeat(3, min-content) 1fr;
         --task-btn-col: 4/5;
         --task-btn-place: center end;
+
+        --newTg-display: none;
+        --newTg-bd: 2px solid var(--black);
+        --newTg-scale: 1;
     }
 }
 @media (max-width: 1000px) {
     :root {
-        --font-400: 1rem;
-        --font-500: 1.1rem;
-        --font-600: 1.3rem;
-        --font-700: 1.5rem;
-        --font-900: 2.8rem;
+        --font-900: 2.4rem;
 
         --page-grid: 8vh 1fr / min-content 1fr;
         --sidebar-position: absolute;
@@ -69,6 +70,10 @@
         --task-grid: repeat(2, min-content) / repeat(3, min-content);
         --task-btn-col: 1/4;
         --task-btn-place: center start;
+
+        --newTg-display: visible;
+        --newTg-bd: none;
+        --newTg-scale: 1.4;
     }
 }
 
@@ -186,10 +191,11 @@ header {
     grid-column: 1 / 3;
 
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     gap: 10%;
-    padding: 0% 1%;
+    padding: 0% 1rem;
+    width: 100%;
 
     background-color: var(--secondary);
 }
@@ -197,10 +203,17 @@ header > h1 {
     user-select: none;
     font-size: var(--font-900);
     font-family:'Inconsolata';
+    white-space: nowrap;
 }
 #new-taskgroup {
-    padding: 3% 10% 3.5% 10%;
+    padding: 3px 10px;
     font-size: var(--font-600);
+    border: var(--newTg-bd);
+    scale: var(--newTg-scale);
+}
+#new-taskgroup::before {
+    display: var(--newTg-display);
+    content: url(./assets/plus-square.svg);
 }
 
 main {
