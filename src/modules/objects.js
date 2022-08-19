@@ -183,7 +183,7 @@ const object = (function () {
     data.dueDate = document.querySelector('#object-form #due-date').value
     data.type = type
 
-    if (document.querySelector('#object-form #if-checkbox')) {
+    if (document.querySelector('#object-form #if-checkbox.hidden' === null)) {
       const checkboxList = document.querySelectorAll(
         '#checkbox-fieldset > fieldset > div > label'
       )
@@ -201,7 +201,6 @@ const object = (function () {
 
     const popupPanel = _newTag('div', {
       id: 'del-popup-panel',
-      style: 'position: absolute; background-color: white;',
     })
     if (Array.isArray(data)) {
       const prompt = _newTag('p', {

@@ -9,6 +9,20 @@ import observer from './modules/observer.js'
 
   if (localStorage.deck) {
     deck = storage.fetchData()
+  } else {
+    const example = app.Taskgroup(
+      'Example Project',
+      'Low',
+      'This taskgroup was created by ME! DIO!!',
+      '06/06/2043'
+    )
+    example.createTask(
+      'Super Secret Task',
+      'Maximum',
+      "Don't tell anyone. Not even yourself. In fact, what are you talking about? Shut up.",
+      '01/01/2025'
+    )
+    deck.push(app.parseData(example))
   }
 
   const deckObj = app.unparseData(deck)

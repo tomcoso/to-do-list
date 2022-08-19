@@ -9,13 +9,16 @@ import {
 } from 'date-fns'
 import calendar from '../assets/calendar.svg'
 import layers from '../assets/layers.svg'
+import gitIcon from '../assets/github.svg'
 const page = (function () {
   const main = document.querySelector('#main-container')
   const deck = document.querySelector('#deck')
   const incomingTab = document.querySelector('.incoming-wrap div')
   const sidebar = document.querySelector('#sidebar')
-  let deckData
   const newTg = document.querySelector('#new-taskgroup')
+  const git = document.querySelector('.header-btns > a > img')
+
+  let deckData
 
   incomingTab.addEventListener('click', (e) => {
     _render(deckData, 'Overview')
@@ -606,6 +609,8 @@ const page = (function () {
   newTg.addEventListener('click', () => {
     observer.publish('newObject', 'taskgroup')
   })
+
+  git.setAttribute('src', gitIcon)
 
   return { attach }
 })()
