@@ -414,12 +414,12 @@ input[type="checkbox"]:checked::before {
 }
 .body-head {
     border-bottom: 2px solid var(--secondary);
-    padding: 2% 0%;
+    padding: 15px 0%;
 }
 .body-head .body-title-wrap {
     display: flex;
     justify-content: space-between;
-    padding: 1% 0%;
+    padding: 10px 0%;
     font-size: var(--font-700);
 }
 .body-title-wrap .body-cdate {
@@ -429,7 +429,7 @@ input[type="checkbox"]:checked::before {
 .body-head .body-priority {
     font-size: var(--font-500);
     font-weight: bold;
-    margin-bottom: 1%;
+    margin-bottom: 10px;
 }
 .body-head .body-priority.maximum {
     color: var(--maximum);
@@ -444,12 +444,12 @@ input[type="checkbox"]:checked::before {
     color: var(--low);
 }
 .body-head p:last-of-type {
-    margin-bottom: 1%;
+    margin-bottom: 10px;
     font-size: var(--font-500);
 }
 .body-head .body-description {
     filter: opacity(.8);
-    padding: 1% 0%;
+    padding: 10px 0%;
 }
 .body-tasks .tasks-header p:nth-child(2) {
     font-size: var(--font-500);
