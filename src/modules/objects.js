@@ -47,7 +47,8 @@ const object = (function () {
       required: true,
       value: "An interesting description!!    -.-'",
       rows: '5',
-      cols: '40',
+      cols: '32',
+      maxlength: '250',
     })
     description.append(descLabel, descInput)
 

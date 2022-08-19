@@ -27,11 +27,10 @@
     --medium: #fde047;
     --low: #65a30d;
     
-    --font-400: 1rem;
     --font-500: 1.1rem;
     --font-600: 1.3rem;
     --font-700: 1.5rem;
-
+    --font-400: 1rem;
     font-family: 'Inconsolata';
 }
 
@@ -40,7 +39,7 @@
     :root {
         --font-900: 2.8rem;
 
-        --page-grid: 8vh 1fr / 20vw 1fr;
+        --page-grid: 8vh 1fr / min-content 1fr;
         --sidebar-position: static;
 
         --popup-height: min-content;
@@ -54,6 +53,7 @@
         --newTg-display: none;
         --newTg-bd: 2px solid var(--black);
         --newTg-scale: 1;
+        --newTg-pad: 3px 10px;
     }
 }
 @media (max-width: 1000px) {
@@ -74,6 +74,13 @@
         --newTg-display: visible;
         --newTg-bd: none;
         --newTg-scale: 1.4;
+        --newTg-pad: 3px 0px 0px 0px;
+    }
+}
+@media (max-width: 600px) {
+    :root {
+        --popup-height: 100%;
+        --popup-width: 100%;
     }
 }
 
@@ -125,6 +132,7 @@ button:active {
 }
 .incoming-wrap > div::before{
     content: url(./assets/calendar.svg);
+    z-index: 2;
     position: absolute;
     left: 10px;
     top: 20%;
@@ -162,9 +170,11 @@ button:active {
 }
 #deck > ul > div::before{
     content: url(./assets/layers.svg);
+    z-index: 2;
     position: absolute;
     left: 10px;
-    top: 15%;
+    top: 0;
+    scale: .8;
 }
 #deck ul li {
     width: 100%;
@@ -206,7 +216,7 @@ header > h1 {
     white-space: nowrap;
 }
 #new-taskgroup {
-    padding: 3px 10px;
+    padding: var(--newTg-pad);
     font-size: var(--font-600);
     border: var(--newTg-bd);
     scale: var(--newTg-scale);
@@ -218,18 +228,13 @@ header > h1 {
 
 main {
     grid-column: 2/3;
+    overflow: hidden;
 }
 #main-container {
     display: grid;
     grid: 8% 1fr / 1fr;
     gap: 2%;
     height: 100%;
-    overflow: scroll;
-    -ms-overflow-style: none;
-    scrollbar-width: none; 
-}
-#main-container::-webkit-scrollbar {
-    display: none;
 }
 #main-container .main-head {
     height: 100%;
@@ -262,9 +267,16 @@ main {
 }
 #main-container .main-body {
     padding: 0% 5%;
+    padding-bottom: 30px;
     display: flex;
     flex-direction: column;
     gap: 5%;
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none; 
+}
+#main-container .main-body::-webkit-scrollbar {
+    display: none;
 }
 .main-body .time-panel {
     border: 2px solid var(--black);
@@ -314,6 +326,7 @@ main {
 .time-panel-tasks ul > li > span:first-child > div {
     display: flex;
     gap: 2rem;
+    padding-left: 5px;
     font-size: var(--font-500);
 }
 input[type="checkbox"] {
@@ -518,10 +531,12 @@ input[type="checkbox"]:checked::before {
     grid-column: 1/2;
 }
 .body-tasks .task .task-ddate {
+    font-size: .9rem;
     grid-column: 2/3;
     filter: opacity(.8);
 }
 .body-tasks .task .task-priority {
+    font-size: .9rem;
     grid-column: 3/4;
     filter: opacity(.8);
 }
@@ -616,6 +631,12 @@ input[type="checkbox"]:checked::before {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none; 
+}
+#object-panel::-webkit-scrollbar {
+    display: none;
 }
 #object-panel > p {
     font-size: var(--font-700);
