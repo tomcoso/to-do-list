@@ -1,3 +1,4 @@
+import { initializeApp } from 'firebase/app'
 import './style.css'
 import './modules/objects'
 import storage from './modules/storage'
@@ -5,6 +6,18 @@ import app from './modules/application.js'
 import page from './modules/htmlgen.js'
 import observer from './modules/observer.js'
 import { add, format } from 'date-fns'
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyAjkeQUd8mXLQ4PO-5_GSSK72a66H99KQw',
+  authDomain: 'task-manager-253a8.firebaseapp.com',
+  projectId: 'task-manager-253a8',
+  storageBucket: 'task-manager-253a8.appspot.com',
+  messagingSenderId: '747966595120',
+  appId: '1:747966595120:web:05f2f497285192d9282df5',
+}
+
+const app = initializeApp(firebaseConfig)
+
 ;(function () {
   let deck = []
 
