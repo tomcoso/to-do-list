@@ -1,4 +1,8 @@
-## Task Manager [project from TOP](https://www.theodinproject.com/lessons/node-path-javascript-todo-list)
+## Task Manager [project](https://www.theodinproject.com/lessons/node-path-javascript-todo-list)
+
+Task manager is a to-do-list style application that is expanded to include grouping functionality in the form of taskgroups / projects. It adds an interface with descriptions, due dates, and priorities to both tasks and taskgrpups, as well as an Overview tab that displays incoming tasks based on their due dates.
+
+Built using vanilla Js, HTML and CSS.
 
 ### Planning stage 
 
